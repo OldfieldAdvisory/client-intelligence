@@ -4,9 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Oldfield Advisor Portal</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: #0C1520; color: #E8EFF6; font-family: 'Inter', system-ui, sans-serif; min-height: 100vh; }
@@ -7666,342 +7663,375 @@ setTimeout(enhanceDecisionCardsV311,50);
 <style id="advisor-portal-v4">
 /* ==========================================================================
    Oldfield Advisor Portal v4 — shell, Overview, Meetings, Focus & Progress
-   One reading of the client: Past (progress) → Now (focus) → Next (direction).
+   Styled in the portal's own language (the Financials snapshot is the reference):
+   deep navy panels, #294b5e borders, bold sans titles, small heavy uppercase labels,
+   a 3px left edge for status and outlined pill tags.
    ========================================================================== */
 :root{
-  --ap-ground:#0C1520;--ap-panel:#0F1D2E;--ap-panel-2:#132436;--ap-raise:#172B3F;
-  --ap-line:#1E3448;--ap-line-2:#29445B;
-  --ap-ink:#E8EFF6;--ap-ink-2:#A9BED0;--ap-ink-3:#6F93AE;
-  --ap-gold:#C9A84C;--ap-gold-2:#D5B94C;--ap-gold-soft:rgba(201,168,76,.12);--ap-gold-line:rgba(201,168,76,.45);
-  --ap-good:#6BB38A;--ap-warn:#E0A04A;--ap-bad:#E07A6B;--ap-info:#6FA6D6;
-  --ap-display:"Source Serif 4",Georgia,"Times New Roman",serif;
-  --ap-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --ap-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
-  --ap-radius:10px;
-  /* Bring the older modules onto the same palette. */
-  --od-bg:#0C1520;--od-bg-2:#0F1D2E;--od-panel:#0F1D2E;--od-panel-2:#132436;--od-panel-3:#172B3F;
-  --od-border:#1E3448;--od-border-soft:#1A2E42;--od-gold:#C9A84C;--od-gold-soft:rgba(201,168,76,.12);
-  color-scheme:dark;
+  --ap-ground:#07131f;--ap-bar:#0a1826;--ap-panel:#081c27;--ap-card:#0b202b;--ap-raise:#102936;
+  --ap-line:#294b5e;--ap-line-head:#234252;--ap-line-row:#173746;--ap-line-input:#35536b;
+  --ap-ink:#f2f6f8;--ap-ink-2:#9fb7c3;--ap-ink-3:#7394a4;--ap-label:#81a5b6;
+  --ap-gold:#d5b94c;--ap-gold-text:#f0cf5c;--ap-gold-soft:rgba(213,185,76,.10);--ap-gold-line:rgba(213,185,76,.42);
+  --ap-good:#63a978;--ap-warn:#d98545;--ap-bad:#d86060;--ap-info:#78a7bd;--ap-neutral:#547184;
+  --ap-font:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  /* One palette for the whole portal: the older modules use these variables too. */
+  --od-bg:#07131f;--od-bg-2:#0a1826;--od-panel:#0b202b;--od-panel-2:#102936;--od-panel-3:#14303f;
+  --od-border:#294b5e;--od-border-soft:#1d3a4a;--od-text:#f4f7fa;--od-copy:#bdd0de;--od-muted:#7f9daa;
+  --od-gold:#d5b94c;--od-gold-soft:rgba(213,185,76,.10);
 }
-html body{background:var(--ap-ground)!important;color:var(--ap-ink)!important;font-family:var(--ap-body)!important;font-size:15px;line-height:1.5;margin:0}
-body *{font-family:inherit}
-.ap-shell :focus-visible,.ap-overlay :focus-visible,.ap-top :focus-visible{outline:2px solid var(--ap-gold);outline-offset:2px}
+html body{background:var(--ap-ground)!important;margin:0}
+.ap-top,.ap-shell,.ap-overlay,.ap-drawer,.ap-mw,.ap-toast{font-family:var(--ap-font);color:var(--ap-ink)}
+.ap-shell :focus-visible,.ap-overlay :focus-visible,.ap-top :focus-visible,.ap-mw :focus-visible,.ap-drawer :focus-visible{outline:2px solid var(--ap-gold);outline-offset:2px}
 
 /* ---------- Top bar ---------- */
-.ap-top{position:sticky;top:0;z-index:60;display:flex;align-items:center;gap:16px;padding:10px 24px;background:rgba(12,21,32,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--ap-line)}
-.ap-top .header-brand{display:flex;align-items:center;gap:10px;flex:0 0 auto}
-.ap-top .oldfield-mark{width:34px;height:34px;object-fit:contain}
-.ap-top .oldfield-wordmark{width:128px;height:30px;object-fit:contain;object-position:left center}
-.ap-top-sep{width:1px;height:28px;background:var(--ap-line)}
-.ap-client-switch{display:flex;align-items:center;gap:8px;min-width:0;flex:1 1 auto}
-.ap-client-switch label{font:500 .66rem var(--ap-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ap-ink-3);white-space:nowrap}
-.ap-client-switch select{appearance:none;-webkit-appearance:none;min-width:0;max-width:340px;width:100%;background:var(--ap-panel) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23C9A84C' stroke-width='1.5' fill='none'/%3E%3C/svg%3E") no-repeat right 12px center;border:1px solid var(--ap-line-2);color:var(--ap-ink);font:600 .95rem var(--ap-body);padding:8px 34px 8px 12px;border-radius:8px;cursor:pointer}
-.ap-client-switch select:hover{border-color:var(--ap-gold-line)}
+.ap-top{position:sticky;top:0;z-index:60;display:flex;align-items:center;gap:16px;padding:12px 28px;background:var(--ap-bar);border-bottom:1px solid var(--od-border-soft)}
+.ap-top .header-brand{display:flex;align-items:center;gap:12px;flex:0 0 auto}
+.ap-top .oldfield-mark{width:40px;height:40px;object-fit:contain}
+.ap-top .oldfield-wordmark{width:150px;height:34px;object-fit:contain;object-position:left center}
+.ap-top-sep{width:1px;height:30px;background:var(--od-border-soft)}
+.ap-client-switch{display:flex;align-items:center;gap:10px;min-width:0;flex:1 1 auto}
+.ap-client-switch label{font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#4A7A9B;white-space:nowrap}
+.ap-client-switch select{appearance:none;-webkit-appearance:none;min-width:0;max-width:320px;width:100%;background:#091725 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23d5b94c' stroke-width='1.5' fill='none'/%3E%3C/svg%3E") no-repeat right 12px center;border:1px solid var(--ap-line-input);color:var(--ap-ink);font:700 13px var(--ap-font);padding:9px 32px 9px 12px;border-radius:8px;cursor:pointer}
+.ap-client-switch select:hover,.ap-client-switch select:focus{border-color:var(--ap-gold);outline:none}
 .ap-top-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto}
-.ap-iconbtn{display:inline-flex;align-items:center;gap:7px;background:transparent;border:1px solid var(--ap-line-2);color:var(--ap-ink-2);border-radius:8px;padding:7px 11px;font:500 .82rem var(--ap-body);cursor:pointer;white-space:nowrap}
-.ap-iconbtn:hover{border-color:var(--ap-gold-line);color:var(--ap-ink)}
-.ap-iconbtn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.6}
-.ap-popover{position:absolute;right:24px;top:58px;width:min(420px,calc(100vw - 32px));background:var(--ap-panel);border:1px solid var(--ap-line-2);border-radius:var(--ap-radius);padding:16px;box-shadow:0 18px 40px rgba(0,0,0,.4);display:grid;gap:10px;z-index:70}
-.ap-popover label{font:500 .68rem var(--ap-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ap-ink-3)}
-.ap-popover input{background:var(--ap-ground);border:1px solid var(--ap-line-2);color:var(--ap-ink);border-radius:8px;padding:9px 11px;font:500 .85rem var(--ap-mono)}
+.ap-iconbtn{display:inline-flex;align-items:center;gap:7px;background:#102b3b;border:1px solid #3b5d70;color:#f5f7f8;border-radius:8px;padding:8px 12px;font:800 11px var(--ap-font);cursor:pointer;white-space:nowrap}
+.ap-iconbtn:hover{filter:brightness(1.12)}
+.ap-iconbtn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.7}
+.ap-popover{position:absolute;right:28px;top:62px;width:min(420px,calc(100vw - 32px));background:var(--ap-panel);border:1px solid var(--ap-line);border-radius:12px;padding:16px;box-shadow:0 18px 40px rgba(0,0,0,.45);display:grid;gap:9px;z-index:70}
 .ap-popover[hidden]{display:none!important}
-.ap-popover p{margin:0;font-size:.8rem;color:var(--ap-ink-3)}
+.ap-popover label{font-size:9px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--ap-label)}
+.ap-popover input{background:#091725;border:1px solid var(--ap-line-input);color:var(--ap-ink);border-radius:8px;padding:9px 11px;font:500 12px ui-monospace,Menlo,monospace}
+.ap-popover p{margin:0;font-size:11px;line-height:1.5;color:var(--ap-ink-3)}
 .ap-popover a{color:var(--ap-gold)}
 
 /* ---------- Workspace frame ---------- */
-#mainPanel.main.ap-main{padding:0!important;min-height:calc(100vh - 57px);background:var(--ap-ground)!important}
-.ap-shell{max-width:1280px;margin:0 auto;padding:22px 24px 64px;display:grid;gap:18px}
-.ap-client-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px 24px}
-.ap-client-id{display:grid;gap:4px;min-width:0}
-.ap-client-name{font:600 clamp(1.6rem,3vw,2.1rem)/1.1 var(--ap-display);letter-spacing:-.01em;color:var(--ap-ink);margin:0;text-wrap:balance}
-.ap-client-meta{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.84rem;color:var(--ap-ink-3)}
-.ap-client-meta b{color:var(--ap-ink-2);font-weight:500}
+#mainPanel.main.ap-main{padding:0!important;min-height:calc(100vh - 65px);background:var(--ap-ground)!important}
+.ap-shell{max-width:1320px;margin:0 auto;padding:26px 32px 64px;display:grid;gap:16px;font-size:13px;line-height:1.5}
+.ap-client-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px 24px;padding-bottom:4px}
+.ap-client-id{display:grid;gap:5px;min-width:0}
+.ap-client-kicker{font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--ap-gold)}
+.ap-client-name{font-size:clamp(20px,2vw,26px);font-weight:800;letter-spacing:-.025em;line-height:1.15;color:#F0F4F8;margin:0}
+.ap-client-meta{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--od-muted)}
+.ap-client-meta b{color:var(--od-copy);font-weight:700}
 .ap-client-actions{display:flex;flex-wrap:wrap;gap:8px}
-.ap-tabs{display:flex;gap:2px;border-bottom:1px solid var(--ap-line);overflow-x:auto;scrollbar-width:none}
+/* Primary tabs: the portal's original tab bar. */
+.ap-tabs{display:flex;gap:4px;padding:6px;background:var(--od-bg-2);border:1px solid var(--od-border-soft);border-radius:10px;overflow-x:auto;scrollbar-width:none}
 .ap-tabs::-webkit-scrollbar{display:none}
-.ap-tab{background:none;border:0;border-bottom:2px solid transparent;color:var(--ap-ink-3);font:500 .9rem var(--ap-body);padding:10px 14px 11px;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:7px;margin-bottom:-1px}
-.ap-tab:hover{color:var(--ap-ink)}
-.ap-tab.active{color:var(--ap-gold);border-bottom-color:var(--ap-gold)}
-.ap-tab .ap-count{font:500 .68rem var(--ap-mono);background:var(--ap-panel-2);border:1px solid var(--ap-line-2);color:var(--ap-ink-2);border-radius:999px;padding:1px 7px}
-.ap-tab .ap-count.bad{color:var(--ap-bad);border-color:color-mix(in srgb,var(--ap-bad) 45%,transparent)}
-.ap-tab-group{font:500 .62rem var(--ap-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ap-line-2);align-self:center;padding:0 6px 0 14px}
+.ap-tab{flex:1 1 0;min-width:max-content;display:inline-flex;align-items:center;justify-content:center;gap:8px;background:transparent;border:1px solid transparent;border-radius:8px;color:#8eb1ca;font:600 12px var(--ap-font);letter-spacing:.08em;text-transform:uppercase;padding:11px 16px;cursor:pointer;white-space:nowrap}
+.ap-tab:hover{color:#C8D8E8;background:rgba(255,255,255,.025)}
+.ap-tab.active{background:var(--ap-gold-soft);color:var(--ap-gold-text);border-color:var(--ap-gold-line)}
+.ap-tab .ap-count{font-size:9px;font-weight:800;letter-spacing:0;border:1px solid var(--ap-line);color:var(--ap-ink-2);border-radius:999px;padding:1px 7px}
+.ap-tab .ap-count.bad{color:#e59191;border-color:rgba(216,96,96,.55)}
+.ap-tab-sep{flex:0 0 1px;align-self:stretch;margin:6px 2px;background:var(--od-border-soft)}
 .ap-shell .tab-panel{display:none;padding:0!important;background:transparent!important}
 .ap-shell .tab-panel.active{display:block}
-.ap-shell .tab-panel > .ap-page{display:grid;gap:16px}
+.ap-shell .tab-panel > .ap-page{display:grid;gap:14px}
 
 /* ---------- Primitives ---------- */
-.ap-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border-radius:8px;padding:8px 14px;font:600 .84rem var(--ap-body);cursor:pointer;border:1px solid var(--ap-line-2);background:var(--ap-panel-2);color:var(--ap-ink);white-space:nowrap;text-decoration:none;line-height:1.2}
-.ap-btn:hover{border-color:var(--ap-gold-line)}
-.ap-btn.primary{background:var(--ap-gold);border-color:var(--ap-gold);color:#14202C}
-.ap-btn.primary:hover{background:var(--ap-gold-2)}
+.ap-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid #3b5d70;background:#102b3b;color:#f5f7f8;border-radius:8px;padding:9px 13px;font:800 11px var(--ap-font);cursor:pointer;white-space:nowrap;text-decoration:none;line-height:1.2}
+.ap-btn:hover{filter:brightness(1.1)}
+.ap-btn.primary{background:var(--ap-gold);border-color:var(--ap-gold);color:#081722}
 .ap-btn.ghost{background:transparent;border-color:transparent;color:var(--ap-ink-2);padding-inline:8px}
-.ap-btn.ghost:hover{color:var(--ap-gold)}
-.ap-btn.danger{color:var(--ap-bad);background:transparent}
-.ap-btn.danger:hover{border-color:var(--ap-bad)}
-.ap-btn.small{padding:5px 10px;font-size:.78rem}
-.ap-btn[disabled]{opacity:.45;cursor:not-allowed}
-.ap-link{background:none;border:0;padding:0;color:var(--ap-gold);font:500 .8rem var(--ap-body);cursor:pointer;text-decoration:none}
+.ap-btn.ghost:hover{color:var(--ap-gold);filter:none}
+.ap-btn.danger{background:transparent;border-color:rgba(216,96,96,.55);color:#e59191}
+.ap-btn.small{padding:6px 10px;font-size:10px}
+.ap-btn[disabled]{opacity:.45;cursor:not-allowed;filter:none}
+.ap-link{background:none;border:0;padding:0;color:var(--ap-gold);font:800 11px var(--ap-font);cursor:pointer;text-decoration:none}
 .ap-link:hover{text-decoration:underline}
-.ap-label{font:500 .68rem/1.3 var(--ap-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ap-ink-3)}
+.ap-label{font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ap-label);line-height:1.3}
 .ap-label.gold{color:var(--ap-gold)}
 .ap-muted{color:var(--ap-ink-2)}
 .ap-faint{color:var(--ap-ink-3)}
-.ap-small{font-size:.82rem}
-.ap-card{background:var(--ap-panel);border:1px solid var(--ap-line);border-radius:var(--ap-radius);padding:16px;display:grid;gap:12px;align-content:start;min-width:0}
-.ap-card-h{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:22px}
-.ap-card-h h3{margin:0;font:500 .7rem var(--ap-mono);letter-spacing:.13em;text-transform:uppercase;color:var(--ap-ink-3)}
-.ap-card-h .ap-card-tools{display:flex;align-items:center;gap:10px}
-.ap-section-title{font:600 1.35rem/1.2 var(--ap-display);margin:0;color:var(--ap-ink);text-wrap:balance}
-.ap-grid{display:grid;gap:16px;align-content:start}
-.ap-g-main{grid-template-columns:minmax(0,1.55fr) minmax(0,1fr)}
+.ap-small{font-size:11px}
+/* Card: a section panel with the Financials head (title left, meta right, rule beneath). */
+.ap-card{background:var(--ap-panel);border:1px solid var(--ap-line);border-radius:12px;padding:0 0 14px;display:grid;gap:12px;align-content:start;min-width:0;overflow:hidden}
+.ap-card>*:not(.ap-card-h){margin-left:14px;margin-right:14px}
+.ap-card>:first-child:not(.ap-card-h){margin-top:14px}
+.ap-card-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-bottom:1px solid var(--ap-line-head);min-height:20px}
+.ap-card-h h3{margin:0;font-size:12px;font-weight:800;color:var(--ap-ink);letter-spacing:0;text-transform:none}
+.ap-card-h .ap-card-tools{display:flex;align-items:center;gap:10px;font-size:9px;color:var(--ap-ink-3)}
+.ap-card-h>.ap-faint,.ap-card-h .ap-card-tools>.ap-faint{font-size:9px}
+.ap-col-h{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:34px}
+.ap-section-title{font-size:15px;font-weight:800;margin:0;color:var(--ap-ink)}
+.ap-grid{display:grid;gap:14px;align-content:start}
+.ap-g-main{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}
 .ap-g-2{grid-template-columns:repeat(2,minmax(0,1fr))}
 .ap-g-3{grid-template-columns:repeat(3,minmax(0,1fr))}
-.ap-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--ap-line-2);border-radius:999px;padding:4px 11px;font-size:.8rem;color:var(--ap-ink-2);background:var(--ap-panel);white-space:nowrap}
-.ap-chip b{color:var(--ap-ink);font-weight:600}
-.ap-chip.dim{opacity:.55;border-style:dashed}
+.ap-chip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--ap-line);border-radius:999px;padding:6px 12px;font:500 11px var(--ap-font);color:var(--ap-ink-2);background:var(--ap-card);white-space:nowrap}
+.ap-chip b{color:var(--ap-ink);font-weight:800}
+.ap-chip.dim{opacity:.6;border-style:dashed}
 .ap-chip.click{cursor:pointer}
 .ap-chip.click:hover{border-color:var(--ap-gold-line)}
-.ap-chip .ap-sw{width:8px;height:8px;border-radius:2px;background:var(--sw,var(--ap-gold))}
+.ap-chip .ap-sw{width:7px;height:7px;border-radius:50%;background:var(--sw,var(--ap-gold))}
+.ap-tag{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--ap-line);border-radius:999px;padding:3px 9px;font:800 8px var(--ap-font);letter-spacing:.07em;text-transform:uppercase;white-space:nowrap;color:var(--ap-ink-2);background:transparent;line-height:1.3}
 .ap-tag[hidden]{display:none}
-.ap-tag{display:inline-flex;align-items:center;font:500 .66rem var(--ap-mono);letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:4px;white-space:nowrap;color:var(--ap-ink-2);background:var(--ap-panel-2)}
-.ap-tag.bad{color:var(--ap-bad);background:color-mix(in srgb,var(--ap-bad) 15%,transparent)}
-.ap-tag.warn{color:var(--ap-warn);background:color-mix(in srgb,var(--ap-warn) 15%,transparent)}
-.ap-tag.good{color:var(--ap-good);background:color-mix(in srgb,var(--ap-good) 15%,transparent)}
-.ap-tag.info{color:var(--ap-info);background:color-mix(in srgb,var(--ap-info) 15%,transparent)}
-.ap-tag.gold{color:var(--ap-gold);background:var(--ap-gold-soft)}
-.ap-dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:0 0 8px;background:var(--ap-ink-3)}
+.ap-tag.bad{border-color:rgba(216,96,96,.55);color:#e59191}
+.ap-tag.warn{border-color:rgba(217,133,69,.55);color:#e7a77a}
+.ap-tag.good{border-color:rgba(99,169,120,.55);color:#91cba1}
+.ap-tag.info{border-color:rgba(120,167,189,.55);color:#9cc3d5}
+.ap-tag.gold{border-color:var(--ap-gold-line);color:#dfc767}
+.ap-dot{width:6px;height:6px;border-radius:50%;display:inline-block;flex:0 0 6px;background:var(--ap-neutral)}
 .ap-dot.good{background:var(--ap-good)}.ap-dot.bad{background:var(--ap-bad)}.ap-dot.warn{background:var(--ap-warn)}.ap-dot.info{background:var(--ap-info)}.ap-dot.gold{background:var(--ap-gold)}
-.ap-bar{height:5px;background:var(--ap-line);border-radius:3px;overflow:hidden}
+.ap-bar{height:4px;background:var(--ap-line-row);border-radius:3px;overflow:hidden}
 .ap-bar i{display:block;height:100%;background:var(--ap-gold);border-radius:3px}
-.ap-empty{border:1px dashed var(--ap-line-2);border-radius:8px;padding:16px;color:var(--ap-ink-2);font-size:.88rem;display:grid;gap:10px;justify-items:start}
-.ap-empty strong{color:var(--ap-ink);font-weight:600}
+.ap-empty{border:1px dashed var(--ap-line);border-radius:10px;padding:14px;color:var(--ap-ink-2);font-size:12px;line-height:1.55;display:grid;gap:9px;justify-items:start}
+.ap-empty strong{color:var(--ap-ink);font-weight:800}
 .ap-list{display:grid}
-.ap-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:baseline;padding:8px 0;border-bottom:1px dashed var(--ap-line)}
+.ap-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--ap-line-row)}
 .ap-row:last-child{border-bottom:0}
 .ap-row[hidden]{display:none}
 .ap-row .ap-dot{transform:translateY(-1px)}
 .ap-row-main{display:grid;gap:2px;min-width:0}
-.ap-row-main .t{color:var(--ap-ink);overflow-wrap:anywhere}
-.ap-row-main .s{font-size:.78rem;color:var(--ap-ink-3)}
-.ap-row-end{display:flex;align-items:center;gap:8px;justify-content:flex-end;white-space:nowrap;font-size:.78rem;color:var(--ap-ink-3)}
-.ap-grp{font:500 .64rem var(--ap-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ap-ink-3);padding-top:6px;display:flex;justify-content:space-between}
-.ap-check{appearance:none;-webkit-appearance:none;width:18px;height:18px;border:1.5px solid var(--ap-line-2);border-radius:5px;background:var(--ap-ground);cursor:pointer;display:inline-grid;place-content:center;flex:0 0 18px;margin:0;transform:translateY(3px)}
-.ap-check:hover{border-color:var(--ap-gold)}
-#mainPanel .ap-check,.ap-mw .ap-check,.ap-overlay .ap-check{background:var(--ap-ground)!important;border-color:var(--ap-line-2)!important}
+.ap-row-main .t{color:#f0f5f7;font-size:12px;overflow-wrap:anywhere}
+.ap-row-main .s{font-size:10px;color:var(--ap-ink-3)}
+.ap-row-end{display:flex;align-items:center;gap:8px;justify-content:flex-end;white-space:nowrap;font-size:10px;color:var(--ap-ink-3)}
+.ap-grp{font-size:9px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--ap-label);padding-top:4px;display:flex;justify-content:space-between}
+.ap-check{appearance:none;-webkit-appearance:none;width:18px;height:18px;border:1px solid #4C6980;border-radius:5px;cursor:pointer;display:inline-grid;place-content:center;flex:0 0 18px;margin:0;transform:translateY(3px)}
+#mainPanel .ap-check,.ap-mw .ap-check,.ap-overlay .ap-check{background:#0B1723!important;border-color:#4C6980!important}
+.ap-check:hover{border-color:var(--ap-gold)!important}
 .ap-check:checked,#mainPanel .ap-check:checked,.ap-mw .ap-check:checked,.ap-overlay .ap-check:checked{background:var(--ap-good)!important;border-color:var(--ap-good)!important}
-.ap-check:disabled{cursor:default;opacity:.6}
-.ap-check:checked::after{content:"";width:8px;height:4px;border:2px solid #0C1520;border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
-.ap-banner{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 20px;border:1px solid var(--ap-gold-line);background:var(--ap-gold-soft);border-radius:var(--ap-radius);padding:12px 16px}
-.ap-banner.warn{border-color:color-mix(in srgb,var(--ap-warn) 50%,transparent);background:color-mix(in srgb,var(--ap-warn) 10%,transparent)}
-.ap-banner .ap-banner-text{display:grid;gap:2px;min-width:0}
-.ap-banner b{font-weight:600}
-.ap-skel{height:14px;border-radius:4px;background:linear-gradient(90deg,var(--ap-panel-2),var(--ap-raise),var(--ap-panel-2));background-size:200% 100%;animation:apShimmer 1.4s infinite}
+.ap-check:checked::after{content:'✓';color:#07131f;font-size:11px;font-weight:900;line-height:1}
+.ap-check:disabled{cursor:default;opacity:.55}
+/* Hero banner: Financials snapshot head, with a status edge. */
+.ap-banner{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 20px;border:1px solid var(--ap-line);border-left:3px solid var(--ap-gold);background:linear-gradient(120deg,#102936,#0a1d28);border-radius:12px;padding:13px 16px}
+.ap-banner.warn{border-left-color:var(--ap-warn)}
+.ap-banner .ap-banner-text{display:grid;gap:3px;min-width:0;font-size:11px;color:var(--ap-ink-2)}
+.ap-banner b{font-size:13px;font-weight:800;color:var(--ap-ink)}
+.ap-skel{height:12px;border-radius:4px;background:linear-gradient(90deg,var(--ap-card),var(--ap-raise),var(--ap-card));background-size:200% 100%;animation:apShimmer 1.4s infinite}
 @keyframes apShimmer{to{background-position:-200% 0}}
 @media (prefers-reduced-motion:reduce){.ap-skel{animation:none}}
-.ap-seg{display:inline-flex;border:1px solid var(--ap-line-2);border-radius:8px;overflow:hidden}
-.ap-seg button{background:transparent;border:0;color:var(--ap-ink-3);font:500 .78rem var(--ap-body);padding:6px 11px;cursor:pointer}
-.ap-seg button+button{border-left:1px solid var(--ap-line-2)}
-.ap-seg button.on{background:var(--ap-gold-soft);color:var(--ap-gold)}
+/* Segmented filters: the Financials sub-view buttons. */
+.ap-seg{display:inline-flex;flex-wrap:wrap;gap:6px}
+.ap-seg button{border:1px solid #28485b;background:#081b27;color:#9fb2bd;border-radius:8px;padding:7px 11px;font:800 10px var(--ap-font);cursor:pointer}
+.ap-seg button.on{color:#f7f8f9;border-color:var(--ap-gold);background:#152d39}
 
 /* ---------- Overview ---------- */
-.ap-next{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 24px;background:var(--ap-gold-soft);border:1px solid var(--ap-gold-line);border-radius:var(--ap-radius);padding:14px 16px}
-.ap-next.none{background:var(--ap-panel);border-style:dashed;border-color:var(--ap-line-2)}
-.ap-next-when{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
-.ap-next-when strong{font:600 1.15rem var(--ap-display);color:var(--ap-ink)}
-.ap-next-outcome{flex:1 1 320px;min-width:0;color:var(--ap-ink-2)}
-.ap-next-outcome b{color:var(--ap-ink);font-weight:600}
+.ap-next{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 26px;border:1px solid var(--ap-line);border-left:3px solid var(--ap-gold);background:linear-gradient(120deg,#102936,#0a1d28);border-radius:14px;padding:16px 20px}
+.ap-next.none{border-left-color:var(--ap-neutral)}
+.ap-next-when{display:grid;gap:4px}
+.ap-next-when strong{font-size:18px;font-weight:800;color:var(--ap-ink);letter-spacing:-.01em}
+.ap-next-when .ap-muted{font-size:13px}
+.ap-next-outcome{flex:1 1 320px;min-width:0;display:grid;gap:4px;font-size:12px;color:var(--ap-ink-2)}
+.ap-next-outcome b{color:var(--ap-ink);font-weight:700;font-size:13px}
 .ap-next-actions{display:flex;gap:8px;flex-wrap:wrap}
 .ap-pos{display:flex;flex-wrap:wrap;gap:8px}
-.ap-focus-item{border:1px solid var(--ap-line);border-radius:8px;padding:12px 13px;display:grid;gap:7px;background:var(--ap-panel-2);cursor:pointer;text-align:left;color:inherit;font:inherit;width:100%}
+/* Focus summary: a Financials snapshot card with a left status edge. */
+.ap-focus-item{position:relative;border:1px solid var(--ap-line);border-radius:11px;padding:12px 14px 12px 17px;display:grid;gap:7px;background:var(--ap-card);cursor:pointer;text-align:left;color:inherit;font:inherit;width:auto;overflow:hidden}
+.ap-focus-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ap-gold)}
+.ap-focus-item.late::before{background:var(--ap-bad)}
 .ap-focus-item:hover{border-color:var(--ap-gold-line)}
-.ap-focus-item .t{font-weight:600;color:var(--ap-ink)}
-.ap-focus-item .s{font-size:.84rem;color:var(--ap-ink-2)}
-.ap-focus-item .m{display:flex;justify-content:space-between;gap:10px;font-size:.76rem;color:var(--ap-ink-3)}
+.ap-focus-item .t{font-size:13px;font-weight:800;color:var(--ap-ink)}
+.ap-focus-item .s{font-size:11px;line-height:1.5;color:var(--ap-ink-2)}
+.ap-focus-item .m{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:10px;color:var(--ap-ink-3)}
 
 /* ---------- Direction spine ---------- */
 .ap-spine{display:grid}
-.ap-step{display:grid;grid-template-columns:72px minmax(0,1fr);gap:14px;position:relative;padding-bottom:18px}
+.ap-step{display:grid;grid-template-columns:64px minmax(0,1fr);gap:14px;position:relative;padding-bottom:18px}
 .ap-step:last-child{padding-bottom:0}
-.ap-step::before{content:"";position:absolute;left:35px;top:28px;bottom:0;width:2px;background:var(--ap-line)}
+.ap-step::before{content:'';position:absolute;left:31px;top:24px;bottom:0;width:1px;background:var(--ap-line)}
 .ap-step:last-child::before{display:none}
-.ap-step .h{font:600 .7rem var(--ap-mono);letter-spacing:.12em;text-align:center;padding:5px 0;border-radius:5px;border:1px solid var(--ap-line-2);background:var(--ap-panel-2);color:var(--ap-ink-3);position:relative;z-index:1;height:max-content}
-.ap-step.done .h{color:var(--ap-good);border-color:var(--ap-good)}
-.ap-step.now .h{color:#14202C;background:var(--ap-gold);border-color:var(--ap-gold)}
-.ap-step .c{display:grid;gap:5px;padding-top:3px;min-width:0}
-.ap-step .c .t{font-weight:600;color:var(--ap-ink)}
-.ap-step.now .c .t{font:600 1.15rem/1.3 var(--ap-display)}
-.ap-step .c .t.empty{font:400 .88rem var(--ap-body);color:var(--ap-ink-3);font-style:italic}
+.ap-step .h{font:800 9px var(--ap-font);letter-spacing:.12em;text-align:center;padding:5px 0;border-radius:999px;border:1px solid var(--ap-line);background:var(--ap-card);color:var(--ap-label);position:relative;z-index:1;height:max-content}
+.ap-step.done .h{color:#91cba1;border-color:rgba(99,169,120,.55)}
+.ap-step.now .h{color:#081722;background:var(--ap-gold);border-color:var(--ap-gold)}
+.ap-step .c{display:grid;gap:4px;padding-top:2px;min-width:0}
+.ap-step .c .t{font-size:13px;font-weight:700;color:var(--ap-ink)}
+.ap-step.now .c .t{font-size:15px;font-weight:800}
+.ap-step .c .t.empty{font-size:12px;font-weight:400;color:var(--ap-ink-3);font-style:italic}
 .ap-step .ap-link{justify-self:start}
 
 /* ---------- Focus cards ---------- */
-.ap-focus-card{background:var(--ap-panel);border:1px solid var(--ap-line);border-radius:var(--ap-radius);padding:16px;display:grid;gap:12px;align-content:start;min-width:0}
-.ap-focus-card.achieved{border-color:color-mix(in srgb,var(--ap-good) 45%,transparent)}
-.ap-focus-card h4{margin:0;font:600 1.08rem/1.3 var(--ap-display);color:var(--ap-ink)}
+.ap-focus-card{position:relative;background:var(--ap-panel);border:1px solid var(--ap-line);border-radius:12px;padding:15px 16px 15px 19px;display:grid;gap:12px;align-content:start;min-width:0;overflow:hidden}
+.ap-focus-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ap-gold)}
+.ap-focus-card.achieved::before{background:var(--ap-good)}
+.ap-focus-card h4{margin:0;font-size:15px;font-weight:800;line-height:1.3;color:var(--ap-ink)}
 .ap-focus-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
-.ap-kv{display:grid;grid-template-columns:132px minmax(0,1fr);gap:7px 14px;font-size:.88rem;margin:0}
-.ap-kv dt{color:var(--ap-ink-3)}
-.ap-kv dd{margin:0;color:var(--ap-ink);overflow-wrap:anywhere}
+.ap-kv{display:grid;grid-template-columns:128px minmax(0,1fr);gap:8px 14px;font-size:12px;margin:0}
+.ap-kv dt{font-size:9px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--ap-label);padding-top:2px}
+.ap-kv dd{margin:0;color:#e6eef2;line-height:1.5;overflow-wrap:anywhere}
 .ap-kv dd.empty{color:var(--ap-ink-3);font-style:italic}
-.ap-focus-foot{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center;border-top:1px solid var(--ap-line);padding-top:10px}
+.ap-focus-foot{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center;border-top:1px solid var(--ap-line-row);padding-top:11px}
 
 /* ---------- Timeline ---------- */
 .ap-tl{display:grid}
-.ap-tl-e{display:grid;grid-template-columns:84px 138px minmax(0,1fr) auto;gap:12px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--ap-line)}
+.ap-tl-e{display:grid;grid-template-columns:72px 136px minmax(0,1fr) auto;gap:12px;align-items:baseline;padding:11px 0;border-bottom:1px solid var(--ap-line-row)}
 .ap-tl-e:last-child{border-bottom:0}
-.ap-tl-e .d{font:500 .78rem var(--ap-mono);color:var(--ap-ink-3)}
+.ap-tl-e .d{font-size:10px;font-weight:700;color:var(--ap-ink-3)}
 .ap-tl-e .b{display:grid;gap:3px;min-width:0}
-.ap-tl-e .b .t{color:var(--ap-ink);overflow-wrap:anywhere}
-.ap-tl-e .b .s{font-size:.82rem;color:var(--ap-ink-2);overflow-wrap:anywhere}
-.ap-tl-e .b .w{font-size:.78rem;color:var(--ap-good)}
+.ap-tl-e .b .t{color:#f0f5f7;font-size:12px;font-weight:600;overflow-wrap:anywhere}
+.ap-tl-e .b .s{font-size:11px;line-height:1.5;color:var(--ap-ink-2);overflow-wrap:anywhere}
+.ap-tl-e .b .w{font-size:10px;color:#91cba1}
 .ap-tl-e.hidden-entry{opacity:.5}
 .ap-tl-tools{display:flex;gap:4px;align-items:center}
-.ap-eye{background:none;border:1px solid transparent;border-radius:6px;color:var(--ap-ink-3);font:500 .72rem var(--ap-body);padding:3px 7px;cursor:pointer;white-space:nowrap}
-.ap-eye.on{color:var(--ap-good)}
-.ap-eye:hover{border-color:var(--ap-line-2)}
-.ap-tl-month{font:500 .64rem var(--ap-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ap-gold);padding:14px 0 4px}
+.ap-eye{background:none;border:1px solid transparent;border-radius:999px;color:var(--ap-ink-3);font:800 9px var(--ap-font);letter-spacing:.04em;padding:3px 8px;cursor:pointer;white-space:nowrap}
+.ap-eye.on{color:#91cba1}
+.ap-eye:hover{border-color:var(--ap-line)}
+.ap-tl-month{font-size:9px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--ap-gold);padding:14px 0 4px}
 
 /* ---------- Actions register ---------- */
-.ap-act{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:start;padding:10px 0;border-bottom:1px solid var(--ap-line)}
+.ap-act{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:start;padding:10px 0;border-bottom:1px solid var(--ap-line-row)}
 .ap-act:last-child{border-bottom:0}
 .ap-act-main{display:grid;gap:3px;min-width:0}
-.ap-act-main .t{color:var(--ap-ink);font-weight:500;overflow-wrap:anywhere;cursor:pointer}
-.ap-act-main .t:hover{color:var(--ap-gold)}
-.ap-act.done .ap-act-main .t{color:var(--ap-ink-2)}
-.ap-act-main .s{font-size:.78rem;color:var(--ap-ink-3);display:flex;flex-wrap:wrap;gap:4px 10px}
-.ap-act-main .ev{font-size:.82rem;color:var(--ap-ink-2);border-left:2px solid var(--ap-good);padding-left:8px;margin-top:4px}
-.ap-act .end{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end;font-size:.8rem;white-space:nowrap}
+.ap-act-main .t{color:#f0f5f7;font-size:12px;font-weight:700;overflow-wrap:anywhere;cursor:pointer}
+.ap-act-main .t:hover{color:var(--ap-gold-text)}
+.ap-act.done .ap-act-main .t{color:var(--ap-ink-2);font-weight:600}
+.ap-act-main .s{font-size:10px;color:var(--ap-ink-3);display:flex;flex-wrap:wrap;gap:3px 10px}
+.ap-act-main .ev{font-size:11px;line-height:1.5;color:var(--ap-ink-2);border-left:2px solid var(--ap-good);padding-left:8px;margin-top:4px}
+.ap-act .end{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end;font-size:10px;white-space:nowrap}
 
 /* ---------- Meetings list ---------- */
-.ap-mtg{display:grid;grid-template-columns:118px minmax(0,1fr) auto;gap:14px;align-items:start;padding:12px 0;border-bottom:1px solid var(--ap-line)}
+.ap-mtg{display:grid;grid-template-columns:104px minmax(0,1fr) auto;gap:14px;align-items:start;padding:12px 0;border-bottom:1px solid var(--ap-line-row)}
 .ap-mtg:last-child{border-bottom:0}
-.ap-mtg .d strong{display:block;font:600 .98rem var(--ap-display);color:var(--ap-ink);white-space:nowrap}
-.ap-mtg .d span{font-size:.76rem;color:var(--ap-ink-3)}
-.ap-mtg .b{display:grid;gap:4px;min-width:0}
-.ap-mtg .b .t{color:var(--ap-ink);font-weight:500;overflow-wrap:anywhere}
-.ap-mtg .b .s{font-size:.82rem;color:var(--ap-ink-2);overflow-wrap:anywhere}
-.ap-mtg .b .k{display:flex;flex-wrap:wrap;gap:6px}
+.ap-mtg .d strong{display:block;font-size:13px;font-weight:800;color:var(--ap-ink);white-space:nowrap}
+.ap-mtg .d span{font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ap-label)}
+.ap-mtg .b{display:grid;gap:5px;min-width:0}
+.ap-mtg .b .t{color:#f0f5f7;font-size:12px;font-weight:700;overflow-wrap:anywhere}
+.ap-mtg .b .s{font-size:11px;line-height:1.5;color:var(--ap-ink-2);overflow-wrap:anywhere}
+.ap-mtg .b .k{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .ap-mtg .e{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
 
-/* ---------- Overlays: modal, drawer, meeting workspace, toast ---------- */
-.ap-overlay{position:fixed;inset:0;z-index:200;background:rgba(5,10,16,.72);display:flex;align-items:flex-start;justify-content:center;padding:6vh 16px 16px;overflow-y:auto}
+/* ---------- Overlays: modal, drawer, toast ---------- */
+.ap-overlay{position:fixed;inset:0;z-index:200;background:rgba(3,9,15,.74);display:flex;align-items:flex-start;justify-content:center;padding:6vh 16px 16px;overflow-y:auto}
 .ap-overlay[hidden]{display:none!important}
-.ap-modal{width:min(640px,100%);background:var(--ap-panel);border:1px solid var(--ap-line-2);border-radius:12px;box-shadow:0 24px 60px rgba(0,0,0,.5);display:grid;color:var(--ap-ink)}
+.ap-modal{width:min(640px,100%);background:var(--ap-panel);border:1px solid var(--ap-line);border-radius:14px;box-shadow:0 24px 60px rgba(0,0,0,.55);display:grid;color:var(--ap-ink);font-size:13px}
 .ap-modal.wide{width:min(860px,100%)}
-.ap-modal-h{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding:18px 20px 12px;border-bottom:1px solid var(--ap-line)}
-.ap-modal-h h2{margin:0;font:600 1.3rem/1.25 var(--ap-display)}
-.ap-modal-h p{margin:4px 0 0;color:var(--ap-ink-3);font-size:.85rem}
-.ap-x{background:none;border:0;color:var(--ap-ink-3);font-size:1.5rem;line-height:1;cursor:pointer;padding:0 4px}
+.ap-modal-h{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding:18px 20px 14px;border-bottom:1px solid var(--ap-line-head);background:linear-gradient(120deg,#102936,#0a1d28);border-radius:14px 14px 0 0}
+.ap-modal-h h2{margin:0;font-size:17px;font-weight:800;color:#F0F4F8}
+.ap-modal-h p{margin:4px 0 0;color:var(--ap-ink-3);font-size:12px}
+.ap-x{background:none;border:0;color:var(--ap-ink-3);font-size:22px;line-height:1;cursor:pointer;padding:0 4px}
 .ap-x:hover{color:var(--ap-ink)}
 .ap-modal-b{padding:16px 20px;display:grid;gap:14px}
-.ap-modal-f{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;align-items:center;padding:12px 20px 18px;border-top:1px solid var(--ap-line)}
+.ap-modal-f{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;align-items:center;padding:12px 20px 16px;border-top:1px solid var(--ap-line-head)}
 .ap-modal-f .spacer{flex:1}
 .ap-field{display:grid;gap:6px;min-width:0}
-.ap-field>label,.ap-field>.lab{font:500 .68rem var(--ap-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ap-ink-3)}
-.ap-field .hint{font-size:.76rem;color:var(--ap-ink-3)}
+.ap-field>label,.ap-field>.lab,label.lab,span.lab{font-size:9px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--ap-label)}
+.ap-field .hint{font-size:10px;font-weight:500;letter-spacing:0;text-transform:none;color:var(--ap-ink-3)}
 .ap-overlay .ap-field input:not([type=checkbox]):not([type=radio]),.ap-overlay .ap-field select,.ap-overlay .ap-field textarea,
 .ap-shell .ap-field input:not([type=checkbox]):not([type=radio]),.ap-shell .ap-field select,.ap-shell .ap-field textarea,
-.ap-mw .ap-field input:not([type=checkbox]):not([type=radio]),.ap-mw .ap-field select,.ap-mw .ap-field textarea,.ap-mw .ap-input{
-  width:100%;background:var(--ap-ground)!important;border:1px solid var(--ap-line-2)!important;color:var(--ap-ink)!important;border-radius:8px;padding:9px 11px;font:400 .92rem var(--ap-body);box-sizing:border-box}
-.ap-overlay .ap-field textarea,.ap-shell .ap-field textarea,.ap-mw .ap-field textarea{min-height:84px;resize:vertical;line-height:1.5}
+.ap-mw .ap-field input:not([type=checkbox]):not([type=radio]),.ap-mw .ap-field select,.ap-mw .ap-field textarea,.ap-mw .ap-input,.ap-overlay .ap-input{
+  width:100%;background:#091725!important;border:1px solid var(--ap-line-input)!important;color:var(--ap-ink)!important;border-radius:8px;padding:9px 11px;font:400 13px var(--ap-font);box-sizing:border-box}
+.ap-overlay .ap-field textarea,.ap-shell .ap-field textarea,.ap-mw .ap-field textarea{min-height:84px;resize:vertical;line-height:1.55}
 .ap-overlay .ap-field input:focus,.ap-overlay .ap-field select:focus,.ap-overlay .ap-field textarea:focus,.ap-mw .ap-field input:focus,.ap-mw .ap-field textarea:focus,.ap-mw .ap-field select:focus,.ap-mw .ap-input:focus{outline:none;border-color:var(--ap-gold)!important}
 .ap-form-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
-.ap-toggle{display:inline-flex;align-items:center;gap:8px;font-size:.86rem;color:var(--ap-ink-2);cursor:pointer}
-.ap-toggle input{accent-color:var(--ap-gold);width:16px;height:16px}
-.ap-client-box{border:1px solid color-mix(in srgb,var(--ap-good) 35%,transparent);border-radius:8px;padding:12px;display:grid;gap:10px;background:color-mix(in srgb,var(--ap-good) 5%,transparent)}
-.ap-client-box .ap-label{color:var(--ap-good)}
-.ap-drawer{position:fixed;top:0;right:0;bottom:0;width:min(440px,100%);background:var(--ap-panel);border-left:1px solid var(--ap-line-2);box-shadow:-18px 0 50px rgba(0,0,0,.4);z-index:210;display:grid;grid-template-rows:auto 1fr auto;color:var(--ap-ink)}
+.ap-toggle{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--ap-ink-2);cursor:pointer}
+.ap-toggle input{accent-color:var(--ap-gold);width:15px;height:15px}
+.ap-client-box{position:relative;border:1px solid var(--ap-line);border-radius:11px;padding:12px 14px 12px 17px;display:grid;gap:10px;background:var(--ap-card);overflow:hidden}
+.ap-client-box::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ap-good)}
+.ap-client-box .ap-label{color:#91cba1}
+.ap-drawer{position:fixed;top:0;right:0;bottom:0;width:min(440px,100%);background:var(--ap-panel);border-left:1px solid var(--ap-line);box-shadow:-18px 0 50px rgba(0,0,0,.45);z-index:210;display:grid;grid-template-rows:auto 1fr auto;color:var(--ap-ink)}
+.ap-drawer .ap-modal-h{border-radius:0}
 .ap-drawer[hidden]{display:none!important}
 .ap-drawer-b{overflow-y:auto;padding:16px 20px}
 .ap-drawer #clientProfile .client-name{display:none}
-.ap-toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ap-raise);border:1px solid var(--ap-line-2);color:var(--ap-ink);border-radius:10px;padding:10px 16px;font-size:.88rem;z-index:400;box-shadow:0 12px 30px rgba(0,0,0,.45);display:flex;gap:14px;align-items:center;max-width:calc(100vw - 32px)}
+.ap-toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ap-raise);border:1px solid var(--ap-line);border-left:3px solid var(--ap-info);color:var(--ap-ink);border-radius:10px;padding:10px 16px;font-size:12px;font-weight:600;z-index:400;box-shadow:0 12px 30px rgba(0,0,0,.5);display:flex;gap:14px;align-items:center;max-width:calc(100vw - 32px)}
 .ap-toast[hidden]{display:none}
-.ap-toast.good{border-color:color-mix(in srgb,var(--ap-good) 55%,transparent)}
-.ap-toast.bad{border-color:color-mix(in srgb,var(--ap-bad) 55%,transparent)}
-.ap-sql{font:400 .74rem/1.5 var(--ap-mono);background:var(--ap-ground);border:1px solid var(--ap-line-2);border-radius:8px;padding:10px;max-height:220px;overflow:auto;white-space:pre;color:var(--ap-ink-2)}
-.ap-steps-list{margin:0;padding-left:1.2em;display:grid;gap:6px;color:var(--ap-ink-2)}
+.ap-toast.good{border-left-color:var(--ap-good)}
+.ap-toast.bad{border-left-color:var(--ap-bad)}
+.ap-sql{font:400 11px/1.5 ui-monospace,Menlo,monospace;background:#091725;border:1px solid var(--ap-line-input);border-radius:8px;padding:10px;max-height:220px;overflow:auto;white-space:pre-wrap;color:var(--ap-ink-2)}
+.ap-steps-list{margin:0;padding-left:1.2em;display:grid;gap:6px;font-size:12px;line-height:1.55;color:var(--ap-ink-2)}
 
-/* ---------- Meeting workspace ---------- */
-.ap-mw{position:fixed;inset:0;z-index:150;background:var(--ap-ground);display:grid;grid-template-rows:auto auto 1fr;color:var(--ap-ink);overflow:hidden}
+/* ---------- Meeting workspace (follows the original Client Meeting screen) ---------- */
+.ap-mw{position:fixed;inset:0;z-index:150;background:var(--ap-ground);display:grid;grid-template-rows:auto 1fr;overflow:hidden;font-size:13px}
 .ap-mw[hidden]{display:none!important}
-.ap-mw-top{display:flex;align-items:center;gap:16px;padding:10px 24px;border-bottom:1px solid var(--ap-line);background:var(--ap-panel)}
-.ap-mw-top .ttl{display:grid;gap:1px;min-width:0;flex:1}
-.ap-mw-top .ttl strong{font:600 1.1rem var(--ap-display);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ap-mw-top .ttl span{font-size:.78rem;color:var(--ap-ink-3)}
+.ap-mw-top{display:flex;align-items:center;gap:16px;padding:12px 28px;border-bottom:1px solid var(--od-border-soft);background:var(--ap-bar)}
+.ap-mw-brand{display:flex;align-items:center;gap:12px;flex:0 0 auto}
+.ap-mw-brand img{height:36px;width:auto;object-fit:contain}
+.ap-mw-brand img+img{height:30px}
+.ap-mw-top .ttl{display:grid;gap:2px;min-width:0;flex:1}
+.ap-mw-top .ttl span:first-child{font-size:10px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--ap-gold)}
+.ap-mw-top .ttl strong{font-size:14px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ap-mw-top .acts{display:flex;gap:8px;align-items:center}
-.ap-mw-save{font-size:.76rem;color:var(--ap-ink-3);white-space:nowrap}
-.ap-mw-steps{display:flex;gap:0;padding:0 24px;border-bottom:1px solid var(--ap-line);background:var(--ap-panel);overflow-x:auto}
-.ap-mw-step{background:none;border:0;border-bottom:2px solid transparent;padding:11px 16px;color:var(--ap-ink-3);font:500 .88rem var(--ap-body);cursor:pointer;display:inline-flex;gap:8px;align-items:center;white-space:nowrap;margin-bottom:-1px}
-.ap-mw-step b{font:600 .72rem var(--ap-mono);width:22px;height:22px;border-radius:50%;display:inline-grid;place-content:center;border:1px solid var(--ap-line-2)}
-.ap-mw-step.on{color:var(--ap-gold);border-bottom-color:var(--ap-gold)}
-.ap-mw-step.on b{background:var(--ap-gold);color:#14202C;border-color:var(--ap-gold)}
-.ap-mw-step.done b{border-color:var(--ap-good);color:var(--ap-good)}
+.ap-mw-save{font-size:10px;color:var(--ap-ink-3);white-space:nowrap}
 .ap-mw-body{overflow-y:auto}
-.ap-mw-inner{max-width:1280px;margin:0 auto;padding:20px 24px 80px;display:grid;gap:16px}
-.ap-mw-intro{display:grid;gap:4px}
-.ap-mw-intro h2{margin:0;font:600 1.4rem var(--ap-display)}
-.ap-mw-intro p{margin:0;color:var(--ap-ink-2)}
-.ap-mw-foot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid var(--ap-line);padding-top:14px}
+.ap-mw-inner{max-width:1320px;margin:0 auto;padding:22px 32px 80px;display:grid;gap:14px}
+.ap-mw-steps{display:flex;gap:4px;padding:6px;background:var(--od-bg-2);border:1px solid var(--od-border-soft);border-radius:10px;overflow-x:auto}
+.ap-mw-step{flex:1 1 0;min-width:max-content;display:inline-flex;align-items:center;justify-content:center;gap:9px;background:transparent;border:1px solid transparent;border-radius:8px;padding:10px 14px;color:#8eb1ca;font:600 12px var(--ap-font);letter-spacing:.08em;text-transform:uppercase;cursor:pointer;white-space:nowrap}
+.ap-mw-step b{font-size:10px;width:20px;height:20px;border-radius:50%;display:inline-grid;place-content:center;border:1px solid var(--ap-line);letter-spacing:0}
+.ap-mw-step.on{background:var(--ap-gold-soft);color:var(--ap-gold-text);border-color:var(--ap-gold-line)}
+.ap-mw-step.on b{background:var(--ap-gold);color:#081722;border-color:var(--ap-gold)}
+.ap-mw-step.done b{border-color:var(--ap-good);color:#91cba1}
+/* Step intro: the original meeting hero card. */
+.ap-mw-intro{display:grid;gap:5px;border:1px solid var(--ap-line);border-left:3px solid var(--ap-gold);background:linear-gradient(120deg,#102936,#0a1d28);border-radius:14px;padding:16px 20px}
+.ap-mw-intro .ap-label{color:var(--ap-gold)}
+.ap-mw-intro h2{margin:0;font-size:20px;font-weight:800;letter-spacing:-.01em;color:#F0F4F8}
+.ap-mw-intro p{margin:0;font-size:12px;color:var(--ap-ink-2)}
+.ap-mw-foot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid var(--ap-line-row);padding-top:14px}
 .ap-agenda{display:grid;gap:8px}
-.ap-ag{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:start;border:1px solid var(--ap-line);border-radius:8px;padding:10px 12px;background:var(--ap-panel)}
+.ap-ag{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:start;border:1px solid var(--ap-line);border-radius:10px;padding:11px 12px 11px 15px;background:var(--ap-card);overflow:hidden}
+.ap-ag::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ap-neutral)}
 .ap-ag.off{opacity:.55}
 .ap-ag.pulse{border-color:var(--ap-gold);box-shadow:0 0 0 3px var(--ap-gold-soft)}
+.ap-ag.active{border-color:var(--ap-gold-line);background:#152d39}
+.ap-ag.active::before,.ap-ag:not(.off)::before{background:var(--ap-gold)}
 .ap-ag .b{display:grid;gap:3px;min-width:0}
-.ap-ag .b .t{font-weight:600;color:var(--ap-ink);overflow-wrap:anywhere}
-.ap-ag .b .s{font-size:.82rem;color:var(--ap-ink-2);overflow-wrap:anywhere}
+.ap-ag .b .t{font-size:12px;font-weight:800;color:var(--ap-ink);overflow-wrap:anywhere}
+.ap-ag .b .s{font-size:11px;line-height:1.5;color:var(--ap-ink-2);overflow-wrap:anywhere}
 .ap-ag .e{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
-.ap-ag.active{border-color:var(--ap-gold-line);background:var(--ap-panel-2)}
 .ap-ag.meet{grid-template-columns:minmax(0,1fr);gap:8px}
-.ap-ag.meet .b>span:first-child{margin-bottom:2px}
+.ap-ag.meet .b>span:first-child{margin-bottom:3px}
 .ap-ag.meet .e{justify-content:flex-start;margin-left:-8px}
-.ap-meet{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr) minmax(0,1fr);gap:16px;align-items:start}
+.ap-meet{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr) minmax(0,1fr);gap:14px;align-items:start}
 .ap-meet .ap-card{position:sticky;top:0}
 .ap-notes{min-height:340px!important}
 .ap-live{display:grid;gap:8px}
-.ap-live-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:start;border:1px solid var(--ap-line);border-radius:8px;padding:8px 10px;background:var(--ap-panel-2);font-size:.86rem}
-.ap-live-item .s{font-size:.74rem;color:var(--ap-ink-3)}
+.ap-live-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:start;border:1px solid var(--ap-line);border-radius:9px;padding:9px 11px;background:var(--ap-card);font-size:12px}
+.ap-live-item .s{font-size:10px;color:var(--ap-ink-3)}
 .ap-quick{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px}
-.ap-act-edit{display:grid;grid-template-columns:minmax(0,2.2fr) 130px minmax(0,1.2fr) 150px minmax(0,1.4fr) 104px;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--ap-line)}
+.ap-act-edit,.ap-act-head{display:grid;grid-template-columns:minmax(0,2.2fr) 130px minmax(0,1.2fr) 150px minmax(0,1.4fr) 104px;gap:8px}
+.ap-act-edit{align-items:center;padding:10px 0;border-bottom:1px solid var(--ap-line-row)}
 .ap-act-edit:last-child{border-bottom:0}
-.ap-act-head{display:grid;grid-template-columns:minmax(0,2.2fr) 130px minmax(0,1.2fr) 150px minmax(0,1.4fr) 104px;gap:8px;padding-bottom:6px;border-bottom:1px solid var(--ap-line)}
-.ap-act-head span{font:500 .64rem var(--ap-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ap-ink-3)}
-.ap-mw .ap-input{padding:7px 9px;font-size:.86rem}
-.ap-focus-upd{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 16px;align-items:center;padding:10px 0;border-bottom:1px solid var(--ap-line)}
+.ap-act-head{padding-bottom:6px;border-bottom:1px solid var(--ap-line-head)}
+.ap-act-head span{font-size:9px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--ap-label)}
+.ap-mw .ap-input{padding:8px 10px;font-size:12px}
+.ap-focus-upd{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 16px;align-items:center;padding:11px 0;border-bottom:1px solid var(--ap-line-row)}
 .ap-focus-upd:last-child{border-bottom:0}
-.ap-change{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;padding:7px 0;border-bottom:1px dashed var(--ap-line);align-items:baseline}
+.ap-focus-upd b{font-size:13px;font-weight:800}
+.ap-change{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;padding:8px 0;border-bottom:1px solid var(--ap-line-row);align-items:baseline;font-size:12px}
 .ap-change:last-child{border-bottom:0}
-.ap-metric{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;padding:7px 0;border-bottom:1px dashed var(--ap-line);font-size:.88rem;align-items:baseline}
-.ap-metric:last-child{border-bottom:0}
-.ap-metric .v{font:500 .82rem var(--ap-mono);color:var(--ap-ink-2);white-space:nowrap}
+
+/* Older modules: the global ".main input" rule hid the ticked state of Journey checklist points. */
+#mainPanel .journey-checkbox:checked{background:var(--stage-colour,var(--ap-gold))!important;border-color:var(--stage-colour,var(--ap-gold))!important}
+#apFocusGrid{grid-template-columns:minmax(0,1fr) minmax(0,1.55fr)}
+/* Journey stage header: the Expand/Collapse hint used to wrap under the stage stripe at the far left. */
+#mainPanel .journey-stage-header{position:relative}
+#mainPanel .journey-stage-header::after{position:absolute;right:20px;bottom:9px}
+#mainPanel .journey-group-label{padding-left:18px;padding-right:18px}
+/* Financials had its own inset; every tab now starts on the same edge. */
+#tab-finance .finance-shell{padding:0 0 34px}
+/* Intelligence used its own warmer hero and larger headings; bring it onto the shared panels. */
+#tab-intelligence .intelligence-hero{padding:18px 20px;border:1px solid var(--ap-line);border-left:3px solid var(--ap-gold);border-radius:14px;background:linear-gradient(120deg,#102936,#0a1d28)}
+#tab-intelligence .intelligence-kicker{font-size:10px;letter-spacing:.14em}
+#tab-intelligence .intelligence-hero h2{font-size:22px;font-weight:800;margin:4px 0 6px;color:#f4f7f8}
+#tab-intelligence .intelligence-hero p{font-size:12px;line-height:1.55;color:#94a9b5}
+#tab-intelligence .intelligence-recent,#tab-intelligence .intelligence-primary,#tab-intelligence .intelligence-side-card{background:var(--ap-panel);border:1px solid var(--ap-line);border-radius:12px}
+#tab-intelligence .intelligence-section-head,#tab-intelligence .intelligence-collapsible>summary{padding:12px 14px;background:transparent;border-bottom:1px solid var(--ap-line-head)}
+#tab-intelligence .intelligence-section-head h3,#tab-intelligence .intelligence-collapsible>summary{font-size:12px;font-weight:800;color:var(--ap-ink)}
+#tab-intelligence .intelligence-section-head span{font-size:9px;color:var(--ap-ink-3)}
 
 /* ---------- Responsive ---------- */
 @media (max-width:1080px){.ap-meet{grid-template-columns:minmax(0,1fr) minmax(0,1.4fr)}.ap-meet>.ap-card:last-child{grid-column:1/-1}.ap-meet .ap-card{position:static}}
 @media (max-width:980px){
-  .ap-g-main,.ap-g-3{grid-template-columns:minmax(0,1fr)}
+  .ap-g-main,.ap-g-3,#apFocusGrid{grid-template-columns:minmax(0,1fr)!important}
   .ap-act-head{display:none}
-  .ap-act-edit{grid-template-columns:minmax(0,1fr) minmax(0,1fr);border:1px solid var(--ap-line);border-radius:8px;padding:10px;margin-bottom:8px}
+  .ap-act-edit{grid-template-columns:minmax(0,1fr) minmax(0,1fr);border:1px solid var(--ap-line);border-radius:10px;padding:10px;margin-bottom:8px}
   .ap-act-edit>:first-child{grid-column:1/-1}
+  .ap-tab{flex:0 0 auto}
 }
 @media (max-width:760px){
   .ap-top{padding:8px 16px;gap:10px;flex-wrap:wrap}
-  .ap-top .oldfield-wordmark,.ap-top-sep,.ap-client-switch label,.ap-iconbtn .lbl{display:none}
+  .ap-top .oldfield-wordmark,.ap-top-sep,.ap-client-switch label,.ap-iconbtn .lbl,.ap-mw-brand,.ap-tab-sep{display:none}
   .ap-shell{padding:16px 16px 48px}
   .ap-mw-inner{padding:16px 16px 64px}
-  .ap-mw-top,.ap-mw-steps{padding-inline:16px}
+  .ap-mw-top{padding-inline:16px}
+  .ap-mw-step{flex:0 0 auto}
   .ap-g-2,.ap-meet{grid-template-columns:minmax(0,1fr)}
-  .ap-tl-e{grid-template-columns:72px minmax(0,1fr)}
+  .ap-tl-e{grid-template-columns:64px minmax(0,1fr)}
   .ap-tl-e .ap-tag,.ap-tl-e .ap-tl-tools{grid-column:2;justify-self:start}
   .ap-mtg{grid-template-columns:minmax(0,1fr)}
   .ap-mtg .e{justify-content:flex-start}
   .ap-kv{grid-template-columns:minmax(0,1fr)}
   .ap-kv dd{margin-bottom:6px}
-  .ap-tab-group{display:none}
 }
 @media print{.ap-top,.ap-tabs,.ap-client-actions{display:none!important}}
-
-/* Older modules: the global ".main input" rule hid the ticked state of Journey checklist points. */
-#mainPanel .journey-checkbox:checked{background:var(--stage-colour,var(--ap-gold))!important;border-color:var(--stage-colour,var(--ap-gold))!important}
-#apFocusGrid{grid-template-columns:minmax(0,1fr) minmax(0,1.55fr)}
-@media (max-width:980px){#apFocusGrid{grid-template-columns:minmax(0,1fr)!important}}
 
 </style>
 <script id="advisor-portal-v4-script">
@@ -8236,13 +8266,13 @@ function apShellHtml(brief,clientName,generatedAt){
 function apTabsHtml(){
   const tab=currentWorkspaceTab||'overview',overdue=AP.loaded?apOverdueActions().length:0,focusN=AP.loaded?apActiveFocus().length:0;
   const b=(id,label,extra='')=>`<button class="ap-tab${tab===id?' active':''}" type="button" role="tab" aria-selected="${tab===id}" data-tab="${id}" onclick="switchTab('${id}',this)">${label}${extra}</button>`;
-  return b('overview','Overview')+b('meetings','Meetings',overdue?`<span class="ap-count bad" title="Overdue actions">${overdue}</span>`:'')+b('focus','Focus &amp; Progress',focusN?`<span class="ap-count">${focusN}</span>`:'')+'<span class="ap-tab-group" aria-hidden="true">Inputs</span>'+b('finance','Financials')+b('journey','Journey')+b('intelligence','Intelligence');
+  return b('overview','Overview')+b('meetings','Meetings',overdue?`<span class="ap-count bad" title="Overdue actions">${overdue}</span>`:'')+b('focus','Focus &amp; Progress',focusN?`<span class="ap-count">${focusN}</span>`:'')+'<span class="ap-tab-sep" aria-hidden="true"></span>'+b('finance','Financials')+b('journey','Journey')+b('intelligence','Intelligence');
 }
 function apClientHeadHtml(){
   const c=apClient();if(!c)return '';
   const draft=apDraftMeeting();
   const meta=[c.client_code?`<b>${apH(c.client_code)}</b>`:'',apH([c.industry||c.sector,c.industry_subcategory].filter(Boolean).join(' · ')),c.advisory_review_frequency?`${apH(cadenceLabel(c.advisory_review_frequency))} reviews`:''].filter(Boolean).map(x=>`<span>${x}</span>`).join('');
-  return `<div class="ap-client-id"><h1 class="ap-client-name">${apH(c.name)}</h1><div class="ap-client-meta">${meta}</div></div><div class="ap-client-actions"><button class="ap-btn" type="button" onclick="apOpenClientDrawer()">Client details</button><button class="ap-btn" type="button" onclick="startNewTouchpoint()">Record touchpoint</button><button class="ap-btn primary" type="button" onclick="apOpenMeeting()">${draft?'Resume meeting':'Start meeting'}</button></div>`;
+  return `<div class="ap-client-id"><span class="ap-client-kicker">Client workspace</span><h1 class="ap-client-name">${apH(c.name)}</h1><div class="ap-client-meta">${meta}</div></div><div class="ap-client-actions"><button class="ap-btn" type="button" onclick="apOpenClientDrawer()">Client details</button><button class="ap-btn" type="button" onclick="startNewTouchpoint()">Record touchpoint</button><button class="ap-btn primary" type="button" onclick="apOpenMeeting()">${draft?'Resume meeting':'Start meeting'}</button></div>`;
 }
 function apLoadingHtml(){return `<div class="ap-page"><div class="ap-card"><div class="ap-skel" style="width:40%"></div><div class="ap-skel"></div><div class="ap-skel" style="width:75%"></div></div><div class="ap-grid ap-g-2"><div class="ap-card"><div class="ap-skel" style="width:50%"></div><div class="ap-skel"></div></div><div class="ap-card"><div class="ap-skel" style="width:50%"></div><div class="ap-skel"></div></div></div></div>`}
 function apSetupBannerHtml(){
@@ -8268,7 +8298,7 @@ function apNextMeetingHtml(context){
   }
   const d=apDaysFrom(apToday(),date);
   const rel=d===0?'today':d>0?`in ${apPlural(d,'day')}`:`${apPlural(-d,'day')} ago, not yet held`;
-  return `<div class="ap-next"><div class="ap-next-when"><span class="ap-label gold">Next meeting</span><strong>${apH(apFmtDay(date))}</strong><span class="ap-faint ap-small">${apH(c.next_meeting_type||'Formal review')} · ${apH(rel)}</span></div><div class="ap-next-outcome">${c.next_meeting_outcome?`Intended outcome: <b>${apH(c.next_meeting_outcome)}</b>`:'<span class="ap-faint">No intended outcome set. What should this meeting achieve?</span>'}</div><div class="ap-next-actions"><button class="ap-btn ghost" type="button" onclick="apEditNextMeeting()">Edit</button>${primary}</div></div>`;
+  return `<div class="ap-next"><div class="ap-next-when"><span class="ap-label gold">Next meeting</span><strong>${apH(apFmtDay(date))}</strong><span class="ap-faint ap-small">${apH(c.next_meeting_type||'Formal review')} · ${apH(rel)}</span></div><div class="ap-next-outcome"><span class="ap-label">Intended outcome</span>${c.next_meeting_outcome?`<b>${apH(c.next_meeting_outcome)}</b>`:'<span class="ap-faint">Not set yet. What should this meeting achieve?</span>'}</div><div class="ap-next-actions"><button class="ap-btn ghost" type="button" onclick="apEditNextMeeting()">Edit</button>${primary}</div></div>`;
 }
 
 /* ---------- Overview ---------- */
@@ -8288,7 +8318,7 @@ function apPositionHtml(){
 function apFocusSummaryHtml(f){
   const acts=apActionsFor(f.id),done=acts.filter(a=>a.status==='complete').length,late=acts.filter(apIsOverdue).length;
   const pct=acts.length?Math.round(done/acts.length*100):0;
-  return `<button class="ap-focus-item" type="button" onclick="apGoFocus(${apA(f.id)})"><span class="t">${apH(f.title)}</span>${f.current_position||f.why_it_matters?`<span class="s">${apH(f.current_position||f.why_it_matters)}</span>`:''}<span class="ap-bar" aria-hidden="true"><i style="width:${pct}%"></i></span><span class="m"><span>${acts.length?`${done} of ${apPlural(acts.length,'action')} complete`:'No actions yet'}</span>${late?`<span class="ap-tag bad">${late} overdue</span>`:''}</span></button>`;
+  return `<button class="ap-focus-item${late?' late':''}" type="button" onclick="apGoFocus(${apA(f.id)})"><span class="t">${apH(f.title)}</span>${f.current_position||f.why_it_matters?`<span class="s">${apH(f.current_position||f.why_it_matters)}</span>`:''}<span class="ap-bar" aria-hidden="true"><i style="width:${pct}%"></i></span><span class="m"><span>${acts.length?`${done} of ${apPlural(acts.length,'action')} complete`:'No actions yet'}</span>${late?`<span class="ap-tag bad">${late} overdue</span>`:''}</span></button>`;
 }
 function apActionRowHtml(a,{compact=false}={}){
   const f=a.focus_id?apFocusById(a.focus_id):null,canEdit=AP.ready;
@@ -8373,14 +8403,14 @@ function apTimelineHtml(){
 function apRoadmapLeftoversHtml(){
   if(AP.ui.clientView)return '';
   const rows=apLegacyRoadmapItems();if(!rows.length)return '';
-  return `<section class="ap-card"><div class="ap-card-h"><h3>Old Road Map items to sort</h3><span class="ap-faint ap-small">${rows.length} left</span></div><p class="ap-small ap-muted" style="margin:0">The Road Map has been replaced by Focus. Move anything still relevant into Focus, or close it.</p><div>${rows.map(n=>`<div class="ap-row"><span class="ap-dot gold"></span><span class="ap-row-main"><span class="t">${apH(n.title)}</span>${n.description&&!String(n.description).startsWith('__')?`<span class="s">${apH(String(n.description).slice(0,160))}</span>`:''}</span><span class="ap-row-end"><button class="ap-btn small" type="button" onclick="apRoadmapToFocus(${apA(n.id)})">Move to Focus</button><button class="ap-btn small ghost" type="button" onclick="apCloseRoadmapItem(${apA(n.id)})">Close</button></span></div>`).join('')}</div></section>`;
+  return `<section class="ap-card"><div class="ap-card-h"><h3>Old Road Map items to sort</h3><span class="ap-faint ap-small">${rows.length} left</span></div><p class="ap-small ap-muted" style="margin-block:0">The Road Map has been replaced by Focus. Move anything still relevant into Focus, or close it.</p><div>${rows.map(n=>`<div class="ap-row"><span class="ap-dot gold"></span><span class="ap-row-main"><span class="t">${apH(n.title)}</span>${n.description&&!String(n.description).startsWith('__')?`<span class="s">${apH(String(n.description).slice(0,160))}</span>`:''}</span><span class="ap-row-end"><button class="ap-btn small" type="button" onclick="apRoadmapToFocus(${apA(n.id)})">Move to Focus</button><button class="ap-btn small ghost" type="button" onclick="apCloseRoadmapItem(${apA(n.id)})">Close</button></span></div>`).join('')}</div></section>`;
 }
 function apFocusHtml(){
   const cv=AP.ui.clientView,active=apActiveFocus().filter(f=>!cv||f.client_visible!==false);
   const past=AP.focus.filter(f=>f.status!=='active'&&(!cv||(f.client_visible!==false&&f.status==='achieved')));
   const head=`<div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center"><div class="ap-seg" role="group" aria-label="View as"><button type="button" class="${cv?'':'on'}" onclick="apSetUi('clientView',false)">Advisor view</button><button type="button" class="${cv?'on':''}" onclick="apSetUi('clientView',true)">Client view</button></div><button class="ap-btn" type="button" onclick="apExportClientSummary()">Client progress summary</button></div>`;
   const cvBanner=cv?'<div class="ap-banner"><div class="ap-banner-text"><b>Client view</b><span class="ap-small ap-muted">What the client would see: only items marked visible, in client wording. Internal notes and hidden items are left out.</span></div></div>':'';
-  const focusCol=`<div class="ap-grid"><div class="ap-card-h"><h2 class="ap-section-title">Current focus</h2>${!cv&&AP.ready&&apActiveFocus().length<AP_FOCUS_LIMIT?'<button class="ap-btn small primary" type="button" onclick="apEditFocus()">Add focus</button>':''}</div>${apActiveFocus().length>AP_FOCUS_LIMIT&&!cv?`<div class="ap-banner warn"><div class="ap-banner-text"><b>${apActiveFocus().length} active focus items.</b><span class="ap-small">Keep it to ${AP_FOCUS_LIMIT} or fewer so meetings stay purposeful. Mark some achieved or drop them.</span></div></div>`:''}${active.length?active.map((f,i,l)=>apFocusCardHtml(f,i,l)).join(''):`<div class="ap-empty"><strong>No current focus.</strong><span>Focus is the two to four things you are trying to move. Add them here, or from Financials, Journey and Intelligence.</span>${!cv&&AP.ready?'<button class="ap-btn primary small" type="button" onclick="apEditFocus()">Add focus</button>':''}</div>`}${past.length?`<details class="ap-card"><summary class="ap-label" style="cursor:pointer">${cv?'Achieved':'Achieved and dropped'} (${past.length})</summary><div class="ap-grid" style="margin-top:12px">${past.map((f,i,l)=>apFocusCardHtml(f,i,l)).join('')}</div></details>`:''}${apRoadmapLeftoversHtml()}</div>`;
+  const focusCol=`<div class="ap-grid"><div class="ap-col-h"><h2 class="ap-section-title">Current focus</h2>${!cv&&AP.ready&&apActiveFocus().length<AP_FOCUS_LIMIT?'<button class="ap-btn small primary" type="button" onclick="apEditFocus()">Add focus</button>':''}</div>${apActiveFocus().length>AP_FOCUS_LIMIT&&!cv?`<div class="ap-banner warn"><div class="ap-banner-text"><b>${apActiveFocus().length} active focus items.</b><span class="ap-small">Keep it to ${AP_FOCUS_LIMIT} or fewer so meetings stay purposeful. Mark some achieved or drop them.</span></div></div>`:''}${active.length?active.map((f,i,l)=>apFocusCardHtml(f,i,l)).join(''):`<div class="ap-empty"><strong>No current focus.</strong><span>Focus is the two to four things you are trying to move. Add them here, or from Financials, Journey and Intelligence.</span>${!cv&&AP.ready?'<button class="ap-btn primary small" type="button" onclick="apEditFocus()">Add focus</button>':''}</div>`}${past.length?`<details class="ap-card"><summary class="ap-label" style="cursor:pointer">${cv?'Achieved':'Achieved and dropped'} (${past.length})</summary><div class="ap-grid" style="margin-top:12px">${past.map((f,i,l)=>apFocusCardHtml(f,i,l)).join('')}</div></details>`:''}${apRoadmapLeftoversHtml()}</div>`;
   return `<div class="ap-page">${apSetupBannerHtml()}${head}${cvBanner}<div class="ap-grid" style="align-items:start" id="apFocusGrid">${apDirectionHtml()}${focusCol}</div>${apTimelineHtml()}</div>`;
 }
 
@@ -8491,10 +8521,10 @@ function apEditAction(id=null,prefill={}){
   if(!AP.ready&&!id){apShowSetup();return}
   const a=id?AP.actions.find(x=>String(x.id)===String(id)):{owner_type:'client',client_visible:true,...prefill};if(!a)return;
   const ro=!AP.ready||a.legacy;
-  const completion=a.status==='complete'?`<div class="ap-client-box" style="border-color:var(--ap-line-2);background:transparent"><span class="ap-label" style="color:var(--ap-good)">Completed ${apH(apFmt(a.completed_at))}</span>${a.completion_summary?`<div>${apLines(a.completion_summary)}</div>`:''}${a.outcome?`<div class="ap-small ap-muted">Outcome: ${apLines(a.outcome)}</div>`:''}${a.evidence_name||a.evidence_url?`<button class="ap-link" type="button" onclick="apOpenEvidence(${apA(a.id)})">${apH(a.evidence_name||'View evidence')}</button>`:''}</div>`:'';
+  const completion=a.status==='complete'?`<div class="ap-client-box" style="border-color:var(--ap-line);background:transparent"><span class="ap-label" style="color:var(--ap-good)">Completed ${apH(apFmt(a.completed_at))}</span>${a.completion_summary?`<div>${apLines(a.completion_summary)}</div>`:''}${a.outcome?`<div class="ap-small ap-muted">Outcome: ${apLines(a.outcome)}</div>`:''}${a.evidence_name||a.evidence_url?`<button class="ap-link" type="button" onclick="apOpenEvidence(${apA(a.id)})">${apH(a.evidence_name||'View evidence')}</button>`:''}</div>`:'';
   const meeting=a.meeting_id?((currentJourneyData?.meetings||[]).find(m=>String(m.id)===String(a.meeting_id))):null;
   apModal({title:id?'Action':'Add action',sub:meeting?`Agreed in the meeting on ${apH(apFmt(meeting.meeting_date))}`:(ro&&id?'Read-only until the database setup is run.':''),
-    body:`${completion}<div class="ap-field"><label for="apa-title">What needs to happen</label><input id="apa-title" value="${apH(a.title||'')}" placeholder="A specific, finishable action" ${ro?'disabled':''}></div><div class="ap-form-row"><div class="ap-field"><span class="lab">Owned by</span><div class="ap-seg" role="radiogroup"><label class="ap-toggle" style="padding:6px 10px"><input type="radio" name="apa-type" value="oldfield" ${a.owner_type==='oldfield'?'checked':''} ${ro?'disabled':''}> Oldfield</label><label class="ap-toggle" style="padding:6px 10px;border-left:1px solid var(--ap-line-2)"><input type="radio" name="apa-type" value="client" ${a.owner_type!=='oldfield'?'checked':''} ${ro?'disabled':''}> Client</label></div></div><div class="ap-field"><label for="apa-owner">Person</label><input id="apa-owner" list="apOwnerNames" value="${apH(a.owner_name||'')}" placeholder="Who is doing it" ${ro?'disabled':''}>${apOwnerOptions()}</div><div class="ap-field"><label for="apa-due">Due</label><input id="apa-due" type="date" value="${apH(a.due_date||'')}" ${ro?'disabled':''}></div></div><div class="ap-field"><label for="apa-focus">Focus</label><select id="apa-focus" ${ro?'disabled':''}>${apFocusOptions(a.focus_id)}</select></div><div class="ap-field"><label for="apa-notes">Internal notes</label><textarea id="apa-notes" placeholder="Context for Oldfield only" ${ro?'disabled':''}>${apH(a.internal_notes||'')}</textarea></div>${ro?'':apClientBox(a)}`,
+    body:`${completion}<div class="ap-field"><label for="apa-title">What needs to happen</label><input id="apa-title" value="${apH(a.title||'')}" placeholder="A specific, finishable action" ${ro?'disabled':''}></div><div class="ap-form-row"><div class="ap-field"><span class="lab">Owned by</span><div class="ap-seg" role="radiogroup"><label class="ap-toggle" style="padding:6px 10px"><input type="radio" name="apa-type" value="oldfield" ${a.owner_type==='oldfield'?'checked':''} ${ro?'disabled':''}> Oldfield</label><label class="ap-toggle" style="padding:6px 10px;border-left:1px solid var(--ap-line)"><input type="radio" name="apa-type" value="client" ${a.owner_type!=='oldfield'?'checked':''} ${ro?'disabled':''}> Client</label></div></div><div class="ap-field"><label for="apa-owner">Person</label><input id="apa-owner" list="apOwnerNames" value="${apH(a.owner_name||'')}" placeholder="Who is doing it" ${ro?'disabled':''}>${apOwnerOptions()}</div><div class="ap-field"><label for="apa-due">Due</label><input id="apa-due" type="date" value="${apH(a.due_date||'')}" ${ro?'disabled':''}></div></div><div class="ap-field"><label for="apa-focus">Focus</label><select id="apa-focus" ${ro?'disabled':''}>${apFocusOptions(a.focus_id)}</select></div><div class="ap-field"><label for="apa-notes">Internal notes</label><textarea id="apa-notes" placeholder="Context for Oldfield only" ${ro?'disabled':''}>${apH(a.internal_notes||'')}</textarea></div>${ro?'':apClientBox(a)}`,
     foot:ro?`<button class="ap-btn" type="button" onclick="apCloseModal()">Close</button>${!AP.ready?'<button class="ap-btn primary" type="button" onclick="apShowSetup()">How to set up</button>':''}`:`${id?`<button class="ap-btn danger" type="button" onclick="apDeleteAction(${apA(id)})">Delete</button>${a.status==='open'?`<button class="ap-btn ghost" type="button" onclick="apCancelAction(${apA(id)})">No longer needed</button>`:''}<span class="spacer"></span>`:''}<button class="ap-btn" type="button" onclick="apCloseModal()">Cancel</button>${id&&a.status==='open'?`<button class="ap-btn" type="button" onclick="apCompleteAction(${apA(id)})">Complete…</button>`:''}${id&&a.status!=='open'?`<button class="ap-btn" type="button" onclick="apReopenAction(${apA(id)})">Reopen</button>`:''}<button class="ap-btn primary" type="submit">${id?'Save':'Add action'}</button>`,
     onSubmit:ro?null:async()=>{
       const title=apV('apa-title');if(!title){document.getElementById('apa-title').focus();return}
@@ -8662,9 +8692,10 @@ function apRenderMW(){
   const idx=AP_STEPS.findIndex(s=>s[0]===m.step);
   const steps=AP_STEPS.map(([k,l],i)=>`<button class="ap-mw-step${k===m.step?' on':''}${i<idx?' done':''}" type="button" onclick="apMStep('${k}')"><b>${i+1}</b>${l}</button>`).join('');
   const body={prepare:apMWPrepare,meet:apMWMeet,agree:apMWAgree,wrap:apMWWrap}[m.step]();
-  el.innerHTML=`<div class="ap-mw-top"><div class="ttl"><strong>${apH(c.name)}</strong><span>${apH(m.type)} · ${apH(apFmtDay(m.date))}${m.resumed?' · resumed draft':''}</span></div><span class="ap-mw-save" id="apMWSave">${m.id?(m.dirty?'Unsaved changes':'Draft saved'):'Not saved yet'}</span><div class="acts"><button class="ap-btn" type="button" onclick="apMeetingSave('draft')">Save draft</button>${m.id?`<button class="ap-btn ghost" type="button" onclick="apDiscardDraft()">Discard</button>`:''}<button class="ap-btn ghost" type="button" onclick="apCloseMeeting()" aria-label="Close meeting">Close</button></div></div><nav class="ap-mw-steps" aria-label="Meeting steps">${steps}</nav><div class="ap-mw-body"><div class="ap-mw-inner">${body}</div></div>`;
+  el.innerHTML=`<div class="ap-mw-top">${apMWBrand()}<div class="ttl"><span>Client meeting</span><strong>${apH(c.name)} · ${apH(m.type)} · ${apH(apFmtDay(m.date))}${m.resumed?' · resumed draft':''}</strong></div><span class="ap-mw-save" id="apMWSave">${m.id?(m.dirty?'Unsaved changes':'Draft saved'):'Not saved yet'}</span><div class="acts"><button class="ap-btn" type="button" onclick="apMeetingSave('draft')">Save draft</button>${m.id?`<button class="ap-btn ghost" type="button" onclick="apDiscardDraft()">Discard</button>`:''}<button class="ap-btn ghost" type="button" onclick="apCloseMeeting()" aria-label="Close meeting">Close</button></div></div><div class="ap-mw-body"><div class="ap-mw-inner"><nav class="ap-mw-steps" aria-label="Meeting steps">${steps}</nav>${body}</div></div>`;
   if(m.pulse){const key=m.pulse;m.pulse=null;setTimeout(()=>{const n=document.querySelector(`[data-agenda-key="${CSS.escape(key)}"]`);if(n){n.classList.add('pulse');n.scrollIntoView({block:'center'});setTimeout(()=>n.classList.remove('pulse'),2600)}},60)}
 }
+function apMWBrand(){return `<div class="ap-mw-brand">${[...document.querySelectorAll('.ap-top .header-brand img')].map(i=>`<img src="${i.src}" alt="">`).join('')}</div>`}
 function apMWFoot(prev,next,nextLabel){return `<div class="ap-mw-foot"><span>${prev?`<button class="ap-btn" type="button" onclick="apMStep('${prev}')">← Back</button>`:''}</span><span>${next?`<button class="ap-btn primary" type="button" onclick="apMStep('${next}')">${nextLabel}</button>`:''}</span></div>`}
 function apAgendaRowHtml(i,mode){
   const tag=`<span class="ap-tag ${AP_KIND_TONES[i.kind]||''}">${apH(AP_KIND_LABELS[i.kind]||i.kind)}</span>`;
@@ -8675,10 +8706,10 @@ function apAgendaRowHtml(i,mode){
 function apMWPrepare(){
   const m=AP.m,since=apSinceLastMeeting(),open=apSortActions(apOpenActions());
   const details=`<section class="ap-card"><div class="ap-card-h"><h3>Meeting</h3></div><div class="ap-form-row"><div class="ap-field"><label for="apm-date">Date</label><input id="apm-date" type="date" value="${apH(m.date)}" onchange="apMSet('date',this.value)"></div><div class="ap-field"><label for="apm-type">Type</label><select id="apm-type" onchange="apMSet('type',this.value)">${AP_MEETING_TYPES.map(t=>`<option ${m.type===t?'selected':''}>${t}</option>`).join('')}</select></div><div class="ap-field"><label for="apm-advisor">Advisor</label><input id="apm-advisor" value="${apH(m.advisor)}" placeholder="Your name" oninput="apMSet('advisor',this.value)"></div></div><div class="ap-field"><label for="apm-objective">What this meeting needs to achieve</label><textarea id="apm-objective" placeholder="e.g. Agree the debtor plan and sign off the KPI dashboard" oninput="apMSet('objective',this.value)">${apH(m.objective)}</textarea></div></section>`;
-  const agenda=`<section class="ap-card"><div class="ap-card-h"><h3>Agenda</h3><span class="ap-faint ap-small">${m.agenda.filter(i=>i.included).length} selected</span></div><p class="ap-small ap-muted" style="margin:0">Current focus is included by default. Tick any prompts from the Journey, Financials and Intelligence worth raising.</p><div class="ap-agenda">${m.agenda.length?m.agenda.map(i=>apAgendaRowHtml(i,'prepare')).join(''):'<div class="ap-empty">No focus or prompts yet. Add an item below.</div>'}</div><div class="ap-quick"><input class="ap-input" id="apm-agenda-new" placeholder="Add an agenda item" onkeydown="if(event.key==='Enter'){event.preventDefault();apMAddAgenda()}"><button class="ap-btn" type="button" onclick="apMAddAgenda()">Add</button></div></section>`;
+  const agenda=`<section class="ap-card"><div class="ap-card-h"><h3>Agenda</h3><span class="ap-faint ap-small">${m.agenda.filter(i=>i.included).length} selected</span></div><p class="ap-small ap-muted" style="margin-block:0">Current focus is included by default. Tick any prompts from the Journey, Financials and Intelligence worth raising.</p><div class="ap-agenda">${m.agenda.length?m.agenda.map(i=>apAgendaRowHtml(i,'prepare')).join(''):'<div class="ap-empty">No focus or prompts yet. Add an item below.</div>'}</div><div class="ap-quick"><input class="ap-input" id="apm-agenda-new" placeholder="Add an agenda item" onkeydown="if(event.key==='Enter'){event.preventDefault();apMAddAgenda()}"><button class="ap-btn" type="button" onclick="apMAddAgenda()">Add</button></div></section>`;
   const sinceCard=`<section class="ap-card"><div class="ap-card-h"><h3>Since last meeting</h3><span class="ap-faint ap-small">${since.last?apH(apFmt(since.last.meeting_date)):'First meeting'}</span></div>${since.items.length?`<div class="ap-list">${since.items.slice(0,10).map(i=>`<div class="ap-row"><span class="ap-dot ${i.tone}"></span><span class="ap-row-main"><span class="t">${apH(i.text)}</span></span><span class="ap-row-end">${apH(i.date?apFmtShort(i.date):i.label||'')}</span></div>`).join('')}</div>`:'<div class="ap-empty">Nothing recorded since the last meeting.</div>'}</section>`;
-  const actCard=`<section class="ap-card"><div class="ap-card-h"><h3>Actions to review</h3>${apOverdueActions().length?`<span class="ap-tag bad">${apOverdueActions().length} overdue</span>`:''}</div>${open.length?`<div>${open.map(a=>apActionRowHtml(a)).join('')}</div><p class="ap-small ap-faint" style="margin:0">Tick an action to record what was delivered. It goes straight onto the timeline.</p>`:'<div class="ap-empty">No open actions from earlier meetings.</div>'}</section>`;
-  return `<div class="ap-mw-intro"><h2>Prepare</h2><p>Set what this meeting is for, choose what to cover and review what was promised last time.</p></div>${apSetupBannerHtml()}<div class="ap-grid ap-g-main"><div class="ap-grid">${details}${agenda}</div><div class="ap-grid">${actCard}${sinceCard}</div></div>${apMWFoot(null,'meet','Start the meeting →')}`;
+  const actCard=`<section class="ap-card"><div class="ap-card-h"><h3>Actions to review</h3>${apOverdueActions().length?`<span class="ap-tag bad">${apOverdueActions().length} overdue</span>`:''}</div>${open.length?`<div>${open.map(a=>apActionRowHtml(a)).join('')}</div><p class="ap-small ap-faint" style="margin-block:0">Tick an action to record what was delivered. It goes straight onto the timeline.</p>`:'<div class="ap-empty">No open actions from earlier meetings.</div>'}</section>`;
+  return `<div class="ap-mw-intro"><span class="ap-label">Step 1 of 4</span><h2>Prepare</h2><p>Set what this meeting is for, choose what to cover and review what was promised last time.</p></div>${apSetupBannerHtml()}<div class="ap-grid ap-g-main"><div class="ap-grid">${details}${agenda}</div><div class="ap-grid">${actCard}${sinceCard}</div></div>${apMWFoot(null,'meet','Start the meeting →')}`;
 }
 function apMToggleAgenda(key){const i=AP.m.agenda.find(x=>x.key===key);if(!i)return;i.included=!i.included;AP.m.dirty=true;apRenderMW()}
 function apMAddAgenda(){const el=document.getElementById('apm-agenda-new'),t=(el?.value||'').trim();if(!t)return;AP.m.agenda.push({key:'custom:'+apUid(),kind:'custom',title:t,detail:'',included:true});AP.m.dirty=true;apRenderMW();document.getElementById('apm-agenda-new')?.focus()}
@@ -8690,8 +8721,8 @@ function apMWMeet(){
   const agenda=`<section class="ap-card"><div class="ap-card-h"><h3>Agenda</h3><button class="ap-link" type="button" onclick="apMStep('prepare')">Edit</button></div><div class="ap-agenda">${inc.length?inc.map(i=>apAgendaRowHtml(i,'meet')).join(''):'<div class="ap-empty">Nothing selected. Run the conversation freely, or go back and pick agenda items.</div>'}</div></section>`;
   const notes=`<section class="ap-card"><div class="ap-card-h"><h3>Notes</h3>${active?`<button class="ap-link" type="button" onclick="apMNoteHeading()">Add heading: ${apH(active.title.slice(0,40))}</button>`:''}</div>${active?`<div class="ap-banner" style="padding:10px 12px"><div class="ap-banner-text"><span class="ap-label gold">Discussing</span><b>${apH(active.title)}</b>${active.detail?`<span class="ap-small ap-muted">${apH(active.detail)}</span>`:''}</div></div>`:''}<div class="ap-field"><label for="apm-notes" class="lab">Internal notes</label><textarea class="ap-notes" id="apm-notes" placeholder="Capture the discussion. Internal to Oldfield." oninput="apMSet('notes',this.value)">${apH(m.notes)}</textarea></div></section>`;
   const decs=m.decisions.filter(d=>String(d.text||'').trim()),acts=m.actions.filter(a=>String(a.title||'').trim());
-  const live=`<section class="ap-card"><div class="ap-card-h"><h3>Decisions</h3><span class="ap-faint ap-small">${decs.length}</span></div><div class="ap-quick"><input class="ap-input" id="apm-dec-new" placeholder="${active?`Decision on ${apH(active.title.slice(0,30))}…`:'Record a decision'}" onkeydown="if(event.key==='Enter'){event.preventDefault();apMAddDecision()}"><button class="ap-btn" type="button" onclick="apMAddDecision()">Add</button></div><div class="ap-live">${decs.map(d=>`<div class="ap-live-item"><span>${apH(d.text)}</span><button class="ap-x" type="button" aria-label="Remove decision" onclick="apMRemove('decisions',${apA(d.uid)})">×</button></div>`).join('')}</div><div class="ap-card-h" style="margin-top:6px"><h3>Actions agreed</h3><span class="ap-faint ap-small">${acts.length}</span></div><div class="ap-quick" style="grid-template-columns:minmax(0,1fr) auto auto"><input class="ap-input" id="apm-act-new" placeholder="${active?`Action on ${apH(active.title.slice(0,30))}…`:'Agree an action'}" onkeydown="if(event.key==='Enter'){event.preventDefault();apMAddAction()}"><select class="ap-input" id="apm-act-owner" aria-label="Owned by" style="width:auto" onchange="AP.m.lastOwner=this.value"><option value="client" ${m.lastOwner!=='oldfield'?'selected':''}>Client</option><option value="oldfield" ${m.lastOwner==='oldfield'?'selected':''}>Oldfield</option></select><button class="ap-btn" type="button" onclick="apMAddAction()">Add</button></div><div class="ap-live">${acts.map(a=>`<div class="ap-live-item"><span>${apH(a.title)}<br><span class="s">${a.owner_type==='oldfield'?'Oldfield':'Client'}${a.focus_id&&apFocusById(a.focus_id)?` · ${apH(apFocusById(a.focus_id).title)}`:''}</span></span><button class="ap-x" type="button" aria-label="Remove action" onclick="apMRemove('actions',${apA(a.uid)})">×</button></div>`).join('')}</div><p class="ap-small ap-faint" style="margin:0">Owners, dates and wording are confirmed in the next step.</p></section>`;
-  return `<div class="ap-mw-intro"><h2>Meet</h2><p>Work through the agenda. Click an item to bring it into focus, then capture decisions and actions as they are agreed.</p></div><div class="ap-meet">${agenda}${notes}${live}</div>${apMWFoot('prepare','agree','Confirm what was agreed →')}`;
+  const live=`<section class="ap-card"><div class="ap-card-h"><h3>Decisions</h3><span class="ap-faint ap-small">${decs.length}</span></div><div class="ap-quick"><input class="ap-input" id="apm-dec-new" placeholder="${active?`Decision on ${apH(active.title.slice(0,30))}…`:'Record a decision'}" onkeydown="if(event.key==='Enter'){event.preventDefault();apMAddDecision()}"><button class="ap-btn" type="button" onclick="apMAddDecision()">Add</button></div><div class="ap-live">${decs.map(d=>`<div class="ap-live-item"><span>${apH(d.text)}</span><button class="ap-x" type="button" aria-label="Remove decision" onclick="apMRemove('decisions',${apA(d.uid)})">×</button></div>`).join('')}</div><div class="ap-card-h" style="margin-top:6px"><h3>Actions agreed</h3><span class="ap-faint ap-small">${acts.length}</span></div><div class="ap-quick" style="grid-template-columns:minmax(0,1fr) auto auto"><input class="ap-input" id="apm-act-new" placeholder="${active?`Action on ${apH(active.title.slice(0,30))}…`:'Agree an action'}" onkeydown="if(event.key==='Enter'){event.preventDefault();apMAddAction()}"><select class="ap-input" id="apm-act-owner" aria-label="Owned by" style="width:auto" onchange="AP.m.lastOwner=this.value"><option value="client" ${m.lastOwner!=='oldfield'?'selected':''}>Client</option><option value="oldfield" ${m.lastOwner==='oldfield'?'selected':''}>Oldfield</option></select><button class="ap-btn" type="button" onclick="apMAddAction()">Add</button></div><div class="ap-live">${acts.map(a=>`<div class="ap-live-item"><span>${apH(a.title)}<br><span class="s">${a.owner_type==='oldfield'?'Oldfield':'Client'}${a.focus_id&&apFocusById(a.focus_id)?` · ${apH(apFocusById(a.focus_id).title)}`:''}</span></span><button class="ap-x" type="button" aria-label="Remove action" onclick="apMRemove('actions',${apA(a.uid)})">×</button></div>`).join('')}</div><p class="ap-small ap-faint" style="margin-block:0">Owners, dates and wording are confirmed in the next step.</p></section>`;
+  return `<div class="ap-mw-intro"><span class="ap-label">Step 2 of 4</span><h2>Meet</h2><p>Work through the agenda. Click an item to bring it into focus, then capture decisions and actions as they are agreed.</p></div><div class="ap-meet">${agenda}${notes}${live}</div>${apMWFoot('prepare','agree','Confirm what was agreed →')}`;
 }
 function apMNoteHeading(){const a=apMActiveItem(),el=document.getElementById('apm-notes');if(!a||!el)return;el.value=`${el.value.replace(/\s+$/,'')}${el.value.trim()?'\n\n':''}${a.title}\n`;apMSet('notes',el.value);el.focus();el.setSelectionRange(el.value.length,el.value.length)}
 function apMAddDecision(){const el=document.getElementById('apm-dec-new'),t=(el?.value||'').trim();if(!t)return;AP.m.decisions.push({uid:apUid(),text:t,client_visible:true,agendaKey:AP.m.activeKey});AP.m.dirty=true;apRenderMW();document.getElementById('apm-dec-new')?.focus()}
@@ -8702,7 +8733,7 @@ function apMWAgree(){
   const rows=m.actions.map(a=>`<div class="ap-act-edit"><input class="ap-input" value="${apH(a.title)}" placeholder="What needs to happen" aria-label="Action" oninput="apMRow('actions',${apA(a.uid)},'title',this.value)"><select class="ap-input" aria-label="Owned by" onchange="apMRow('actions',${apA(a.uid)},'owner_type',this.value)"><option value="client" ${a.owner_type!=='oldfield'?'selected':''}>Client</option><option value="oldfield" ${a.owner_type==='oldfield'?'selected':''}>Oldfield</option></select><input class="ap-input" list="apOwnerNames" value="${apH(a.owner_name)}" placeholder="Person" aria-label="Person" oninput="apMRow('actions',${apA(a.uid)},'owner_name',this.value)"><input class="ap-input" type="date" value="${apH(a.due_date)}" aria-label="Due date" onchange="apMRow('actions',${apA(a.uid)},'due_date',this.value)"><select class="ap-input" aria-label="Focus" onchange="apMRow('actions',${apA(a.uid)},'focus_id',this.value)">${apFocusOptions(a.focus_id)}</select><span style="display:flex;gap:6px;align-items:center"><label class="ap-toggle" title="Show to client"><input type="checkbox" ${a.client_visible!==false?'checked':''} onchange="apMRow('actions',${apA(a.uid)},'client_visible',this.checked)">Client</label><button class="ap-x" type="button" aria-label="Remove action" onclick="apMRemove('actions',${apA(a.uid)})">×</button></span></div>`).join('');
   const missing=m.actions.filter(a=>String(a.title||'').trim()&&!a.due_date).length;
   const decs=m.decisions.map(d=>`<div class="ap-quick" style="grid-template-columns:minmax(0,1fr) auto auto;align-items:center"><input class="ap-input" value="${apH(d.text)}" aria-label="Decision" oninput="apMRow('decisions',${apA(d.uid)},'text',this.value)"><label class="ap-toggle"><input type="checkbox" ${d.client_visible!==false?'checked':''} onchange="apMRow('decisions',${apA(d.uid)},'client_visible',this.checked)">Client</label><button class="ap-x" type="button" aria-label="Remove decision" onclick="apMRemove('decisions',${apA(d.uid)})">×</button></div>`).join('');
-  return `<div class="ap-mw-intro"><h2>Agree</h2><p>Confirm every action has an owner and a date before you finish. Unticking "Client" keeps an item internal.</p></div><section class="ap-card"><div class="ap-card-h"><h3>Actions</h3><div class="ap-card-tools"><span class="ap-tag warn" id="apm-nodate" ${missing?'':'hidden'}>${missing} without a date</span><button class="ap-btn small" type="button" onclick="apMBlankAction()">Add action</button></div></div>${m.actions.length?`<div class="ap-act-head"><span>Action</span><span>Owner</span><span>Person</span><span>Due</span><span>Focus</span><span></span></div>${rows}`:'<div class="ap-empty">No actions agreed yet.</div>'}${apOwnerOptions()}</section><section class="ap-card"><div class="ap-card-h"><h3>Decisions</h3><button class="ap-btn small" type="button" onclick="apMBlankDecision()">Add decision</button></div>${m.decisions.length?`<div class="ap-grid" style="gap:8px">${decs}</div>`:'<div class="ap-empty">No decisions recorded.</div>'}</section>${apMWFoot('meet','wrap','Wrap up →')}`;
+  return `<div class="ap-mw-intro"><span class="ap-label">Step 3 of 4</span><h2>Agree</h2><p>Confirm every action has an owner and a date before you finish. Unticking "Client" keeps an item internal.</p></div><section class="ap-card"><div class="ap-card-h"><h3>Actions</h3><div class="ap-card-tools"><span class="ap-tag warn" id="apm-nodate" ${missing?'':'hidden'}>${missing} without a date</span><button class="ap-btn small" type="button" onclick="apMBlankAction()">Add action</button></div></div>${m.actions.length?`<div class="ap-act-head"><span>Action</span><span>Owner</span><span>Person</span><span>Due</span><span>Focus</span><span></span></div>${rows}`:'<div class="ap-empty">No actions agreed yet.</div>'}${apOwnerOptions()}</section><section class="ap-card"><div class="ap-card-h"><h3>Decisions</h3><button class="ap-btn small" type="button" onclick="apMBlankDecision()">Add decision</button></div>${m.decisions.length?`<div class="ap-grid" style="gap:8px">${decs}</div>`:'<div class="ap-empty">No decisions recorded.</div>'}</section>${apMWFoot('meet','wrap','Wrap up →')}`;
 }
 function apMBlankAction(){AP.m.actions.push({uid:apUid(),title:'',owner_type:'client',owner_name:'',due_date:'',focus_id:'',client_visible:true,client_wording:''});AP.m.dirty=true;apRenderMW();{const r=document.querySelectorAll('#apMW .ap-act-edit');r[r.length-1]?.querySelector('input')?.focus()}}
 function apMBlankDecision(){AP.m.decisions.push({uid:apUid(),text:'',client_visible:true});AP.m.dirty=true;apRenderMW()}
@@ -8720,7 +8751,7 @@ function apMWWrap(){
   const prog=sugg.length?sugg.map(s=>`<div class="ap-row"><input class="ap-check" type="checkbox" ${s.include?'checked':''} aria-label="Add to timeline" onchange="apMKeep(${apA(s.key)},'include',this.checked,${s.client_visible})"><span class="ap-row-main"><span class="t">${apH(s.title)}</span><span class="s">${apH(AP_ENTRY_TYPES[s.entry_type]?.label||'')}</span></span><span class="ap-row-end"><label class="ap-toggle"><input type="checkbox" ${s.client_visible?'checked':''} onchange="apMKeep(${apA(s.key)},'client_visible',this.checked,${s.client_visible})">Client</label></span></div>`).join(''):'<div class="ap-faint ap-small">Decisions you record will be suggested here.</div>';
   const acts=m.actions.filter(a=>String(a.title||'').trim()),decs=m.decisions.filter(d=>String(d.text||'').trim());
   const changed=Object.values(m.focusUpdates).filter(u=>u.status&&u.status!=='active').length;
-  return `<div class="ap-mw-intro"><h2>Wrap up</h2><p>Update the focus, decide what goes on the timeline, write a short summary for the client and book the next meeting.</p></div><div class="ap-grid ap-g-main"><div class="ap-grid"><section class="ap-card"><div class="ap-card-h"><h3>Current focus</h3></div>${focus}</section><section class="ap-card"><div class="ap-card-h"><h3>Summary for the client</h3></div><div class="ap-field"><label for="apm-summary" class="lab">In the client's words</label><textarea id="apm-summary" placeholder="Two or three sentences on what we covered and what happens next. This goes on the client summary." oninput="apMSet('client_summary',this.value)">${apH(m.client_summary)}</textarea></div></section></div><div class="ap-grid"><section class="ap-card"><div class="ap-card-h"><h3>Add to the progress timeline</h3></div>${prog}</section><section class="ap-card"><div class="ap-card-h"><h3>Next meeting</h3></div><div class="ap-form-row"><div class="ap-field"><label for="apm-next-date">Date</label><input id="apm-next-date" type="date" value="${apH(m.next.date||'')}" onchange="apMSet('next.date',this.value)"></div><div class="ap-field"><label for="apm-next-type">Type</label><select id="apm-next-type" onchange="apMSet('next.type',this.value)">${AP_MEETING_TYPES.map(t=>`<option ${m.next.type===t?'selected':''}>${t}</option>`).join('')}</select></div></div><div class="ap-field"><label for="apm-next-outcome">Intended outcome</label><textarea id="apm-next-outcome" style="min-height:64px" placeholder="What should the next meeting achieve?" oninput="apMSet('next.outcome',this.value)">${apH(m.next.outcome||'')}</textarea></div></section><section class="ap-card" style="border-color:var(--ap-gold-line)"><div class="ap-card-h"><h3>Ready to finish</h3></div><div class="ap-list"><div class="ap-row"><span class="ap-dot gold"></span><span class="ap-row-main"><span class="t">${apPlural(acts.length,'action')} will be created</span></span><span></span></div><div class="ap-row"><span class="ap-dot gold"></span><span class="ap-row-main"><span class="t">${apPlural(decs.length,'decision')} recorded</span></span><span></span></div><div class="ap-row" id="apm-focus-changed" ${changed?'':'hidden'}><span class="ap-dot good"></span><span class="ap-row-main"><span class="t">${apPlural(changed,'focus item')} achieved or dropped</span></span><span></span></div></div>${AP.ready?'':'<p class="ap-small ap-muted" style="margin:0">The database setup has not been run, so the meeting is saved but actions and timeline entries will only be created once it is.</p>'}<button class="ap-btn primary" type="button" id="apCompleteBtn" onclick="apMeetingComplete()">Complete meeting</button></section></div></div>${apMWFoot('agree',null,'')}`;
+  return `<div class="ap-mw-intro"><span class="ap-label">Step 4 of 4</span><h2>Wrap up</h2><p>Update the focus, decide what goes on the timeline, write a short summary for the client and book the next meeting.</p></div><div class="ap-grid ap-g-main"><div class="ap-grid"><section class="ap-card"><div class="ap-card-h"><h3>Current focus</h3></div>${focus}</section><section class="ap-card"><div class="ap-card-h"><h3>Summary for the client</h3></div><div class="ap-field"><label for="apm-summary" class="lab">In the client's words</label><textarea id="apm-summary" placeholder="Two or three sentences on what we covered and what happens next. This goes on the client summary." oninput="apMSet('client_summary',this.value)">${apH(m.client_summary)}</textarea></div></section></div><div class="ap-grid"><section class="ap-card"><div class="ap-card-h"><h3>Add to the progress timeline</h3></div>${prog}</section><section class="ap-card"><div class="ap-card-h"><h3>Next meeting</h3></div><div class="ap-form-row"><div class="ap-field"><label for="apm-next-date">Date</label><input id="apm-next-date" type="date" value="${apH(m.next.date||'')}" onchange="apMSet('next.date',this.value)"></div><div class="ap-field"><label for="apm-next-type">Type</label><select id="apm-next-type" onchange="apMSet('next.type',this.value)">${AP_MEETING_TYPES.map(t=>`<option ${m.next.type===t?'selected':''}>${t}</option>`).join('')}</select></div></div><div class="ap-field"><label for="apm-next-outcome">Intended outcome</label><textarea id="apm-next-outcome" style="min-height:64px" placeholder="What should the next meeting achieve?" oninput="apMSet('next.outcome',this.value)">${apH(m.next.outcome||'')}</textarea></div></section><section class="ap-card" style="border-color:var(--ap-gold-line)"><div class="ap-card-h"><h3>Ready to finish</h3></div><div class="ap-list"><div class="ap-row"><span class="ap-dot gold"></span><span class="ap-row-main"><span class="t">${apPlural(acts.length,'action')} will be created</span></span><span></span></div><div class="ap-row"><span class="ap-dot gold"></span><span class="ap-row-main"><span class="t">${apPlural(decs.length,'decision')} recorded</span></span><span></span></div><div class="ap-row" id="apm-focus-changed" ${changed?'':'hidden'}><span class="ap-dot good"></span><span class="ap-row-main"><span class="t">${apPlural(changed,'focus item')} achieved or dropped</span></span><span></span></div></div>${AP.ready?'':'<p class="ap-small ap-muted" style="margin-block:0">The database setup has not been run, so the meeting is saved but actions and timeline entries will only be created once it is.</p>'}<button class="ap-btn primary" type="button" id="apCompleteBtn" onclick="apMeetingComplete()">Complete meeting</button></section></div></div>${apMWFoot('agree',null,'')}`;
 }
 function apMFocus(id,field,value){const u=AP.m.focusUpdates[id]||{};u[field]=value;AP.m.focusUpdates[id]=u;AP.m.dirty=true;apMarkUnsaved();const el=document.getElementById('apm-focus-changed');if(el){const n=Object.values(AP.m.focusUpdates).filter(x=>x.status&&x.status!=='active').length;el.hidden=!n;el.querySelector('.t').textContent=`${apPlural(n,'focus item')} achieved or dropped`}}
 
@@ -8803,7 +8834,7 @@ function apRenderRecord(){
   const card=(title,html)=>`<section class="ap-card"><div class="ap-card-h"><h3>${title}</h3></div>${html}</section>`;
   const left=[s?.client_summary?card('Summary for the client',`<div>${apLines(s.client_summary)}</div>`):'',card('Decisions',decisions.length?`<div class="ap-list">${decisions.map(d=>`<div class="ap-row"><span class="ap-dot gold"></span><span class="ap-row-main"><span class="t">${apH(d)}</span></span><span></span></div>`).join('')}</div>`:'<div class="ap-faint ap-small">No decisions recorded.</div>'),row.meeting_notes?card('Notes (internal)',`<div class="ap-muted">${apLines(row.meeting_notes)}</div>`):''].join('');
   const right=[card('Actions agreed',acts.length?`<div>${acts.map(a=>apActionRowHtml(a)).join('')}</div>`:legacyActs.length?`<div class="ap-list">${legacyActs.map(a=>`<div class="ap-row"><span class="ap-dot"></span><span class="ap-row-main"><span class="t">${apH(a.title)}</span><span class="s">${apH([a.owner,a.due?`due ${apFmt(a.due)}`:''].filter(Boolean).join(' · '))}</span></span><span></span></div>`).join('')}</div>`:(row.commitments||row.next_actions)?`<div class="ap-muted">${apLines(row.commitments||row.next_actions)}</div>`:'<div class="ap-faint ap-small">No actions recorded.</div>'),changes.length?card('What had changed going in',`<div class="ap-list">${changes.map(x=>`<div class="ap-change"><span class="ap-faint">${apH(x.icon||'•')}</span><span><b>${apH(x.title)}</b> <span class="ap-muted">${apH(x.copy||'')}</span></span></div>`).join('')}</div>`):'',snap.business?.stage?card('Position at the time',`<div class="ap-pos"><span class="ap-chip">Business <b>Stage ${apH(snap.business.stage.stage_order)} · ${apH(snap.business.stage.name)}</b></span>${(snap.owners||[]).map(o=>`<span class="ap-chip">${apH(o.name)} <b>${apH(o.stage?ownerJourneyStageLabel(o.stage):'Not assessed')}</b></span>`).join('')}</div>`):''].join('');
-  el.innerHTML=`<div class="ap-mw-top"><div class="ttl"><strong>${apH(c.name)} · meeting record</strong><span>${apH(apMeetingType(row))} · ${apH(apFmtDay(row.meeting_date))}${row.advisor_name?` · ${apH(row.advisor_name)}`:''}</span></div><div class="acts"><button class="ap-btn" type="button" onclick="apExportClientSummary(${apA(row.id)})">Client summary</button><button class="ap-btn danger" type="button" onclick="deleteJourneyMeeting(${apA(row.id)})">Delete</button><button class="ap-btn ghost" type="button" onclick="apCloseMeeting(true)">Close</button></div></div><div class="ap-mw-body"><div class="ap-mw-inner"><div class="ap-mw-intro"><span class="ap-label gold">Objective</span><h2>${apH(row.meeting_objective||'Advisory meeting')}</h2></div><div class="ap-grid ap-g-2">${'<div class="ap-grid">'+left+'</div>'}${'<div class="ap-grid">'+right+'</div>'}</div></div></div>`;
+  el.innerHTML=`<div class="ap-mw-top">${apMWBrand()}<div class="ttl"><span>Meeting record</span><strong>${apH(c.name)} · ${apH(apMeetingType(row))} · ${apH(apFmtDay(row.meeting_date))}${row.advisor_name?` · ${apH(row.advisor_name)}`:''}</strong></div><div class="acts"><button class="ap-btn" type="button" onclick="apExportClientSummary(${apA(row.id)})">Client summary</button><button class="ap-btn danger" type="button" onclick="deleteJourneyMeeting(${apA(row.id)})">Delete</button><button class="ap-btn ghost" type="button" onclick="apCloseMeeting(true)">Close</button></div></div><div class="ap-mw-body"><div class="ap-mw-inner"><div class="ap-mw-intro"><span class="ap-label">Objective</span><h2>${apH(row.meeting_objective||'Advisory meeting')}</h2></div><div class="ap-grid ap-g-2">${'<div class="ap-grid">'+left+'</div>'}${'<div class="ap-grid">'+right+'</div>'}</div></div></div>`;
 }
 
 /* ---------- Client summary ("Your progress with Oldfield") ---------- */
@@ -8822,11 +8853,11 @@ function apExportClientSummary(meetingId=null){
   const meetingActs=meeting?AP.actions.filter(a=>String(a.meeting_id||'')===String(meeting.id)&&a.client_visible!==false):[];
   const meetingDecs=meeting?(s.decisions||[]).filter(d=>d.client_visible!==false).map(d=>d.text):[];
   const actRows=(rows)=>rows.map(a=>`<tr><td>${esc(w(a))}</td><td>${a.owner_type==='oldfield'?'Oldfield':'You'}${a.owner_name&&a.owner_type!=='oldfield'?` (${esc(a.owner_name)})`:''}</td><td>${a.status==='complete'?'Done':a.due_date?esc(apFmt(a.due_date)):'To agree'}</td></tr>`).join('');
-  const html=`<!doctype html><html lang="en"><head><meta charset="utf-8"><title>${esc(c.name)} · Your progress with Oldfield</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600&family=IBM+Plex+Sans:wght@400;600&display=swap"><style>
-  @page{size:A4;margin:16mm}*{box-sizing:border-box}body{font:10.5pt/1.5 "IBM Plex Sans",Arial,sans-serif;color:#14202C;margin:0}
+  const html=`<!doctype html><html lang="en"><head><meta charset="utf-8"><title>${esc(c.name)} · Your progress with Oldfield</title><style>
+  @page{size:A4;margin:16mm}*{box-sizing:border-box}body{font:10.5pt/1.5 Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;color:#14202C;margin:0}
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact}@media screen{body{max-width:780px;margin:28px auto;padding:0 24px}}
   header{display:flex;justify-content:space-between;align-items:center;background:#0C1520;border-bottom:3px solid #C9A84C;border-radius:6px 6px 0 0;padding:12px 16px}header img{height:28px;margin-right:10px;vertical-align:middle}header .k{color:#C9A84C}
-  h1{font:600 22pt/1.1 "Source Serif 4",Georgia,serif;margin:18px 0 2px}h2{font:600 13pt "Source Serif 4",Georgia,serif;margin:22px 0 8px;padding-bottom:4px;border-bottom:1px solid #E3DCC8}
+  h1{font-size:21pt;font-weight:800;letter-spacing:-.02em;line-height:1.1;margin:18px 0 2px}h2{font-size:12.5pt;font-weight:800;margin:22px 0 8px;padding-bottom:5px;border-bottom:1px solid #E3DCC8}
   .k{font-size:7.5pt;letter-spacing:.14em;text-transform:uppercase;color:#8F6F14;font-weight:600}.sub{color:#5A6B7C}
   .spine{display:grid;grid-template-columns:70px 1fr;gap:6px 14px}.spine .h{font-size:7.5pt;font-weight:600;letter-spacing:.12em;text-align:center;border:1px solid #C9A84C;border-radius:4px;padding:3px 0;color:#8F6F14;height:max-content}.spine .h.now{background:#C9A84C;color:#14202C}.spine .h.done{border-color:#2F7D52;color:#2F7D52}
   .focus{border:1px solid #E3DCC8;border-radius:6px;padding:10px 12px;margin-bottom:8px;break-inside:avoid}.focus b{font-size:11pt}.focus p{margin:4px 0 0;color:#44566A}
