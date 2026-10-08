@@ -2470,99 +2470,54 @@ button.combined-position-card:hover{border-color:#3a6071;background:linear-gradi
 
 <!-- Add / Edit Modal -->
 <div class="modal-overlay hidden" id="clientModal">
-  <div class="modal">
-    <div class="modal-header">
-      <span class="modal-title" id="modalTitle">Add New Client</span>
-      <button class="modal-close" onclick="closeModal()">×</button>
+  <div class="modal cf-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-header cf-head">
+      <div><div class="cf-kicker">Client record</div><span class="modal-title" id="modalTitle">Add New Client</span></div>
+      <button class="modal-close" onclick="closeModal()" aria-label="Close">×</button>
     </div>
-    <div class="modal-body">
-      <div class="form-group">
-        <div class="client-field-label"><label class="form-label" for="f_name">Client Name</label><button class="client-help" type="button" aria-label="Help for Client Name" data-help="Enter the client’s full legal or commonly used trading name. Format: Meridian Fabrications Ltd.">?</button></div>
-        <input class="form-input" id="f_name" placeholder="e.g. Meridian Fabrications Ltd" />
-      </div>
-      <div class="form-group">
-        <div class="client-field-label"><label class="form-label" for="f_clientCode">Client Code</label><button class="client-help" type="button" aria-label="Help for Client Code" data-help="Required. Enter the unique client code used in Karbon and other firm systems. This provides a stable identifier even if the client name is written differently elsewhere.">?</button></div>
-        <input class="form-input" id="f_clientCode" placeholder="e.g. ABC001" autocomplete="off" />
-      </div>
-      <div class="industry-grid">
-        <div class="form-group">
-          <div class="client-field-label"><label class="form-label" for="f_industry">Industry</label><button class="client-help" type="button" aria-label="Help for Industry" data-help="Select the controlled peer group used for industry benchmarking. Available groups for now: Service, Retail, Wholesale, Manufacturing, Construction or Rental.">?</button></div>
-          <select class="form-input client-industry-select" id="f_industry">
-            <option value="">Select Industry</option><option>Service</option><option>Retail</option><option>Wholesale</option><option>Manufacturing</option><option>Construction</option><option>Rental</option>
-          </select>
+    <div class="modal-body cf-body">
+      <div class="client-ai-status" id="clientAiStatus" aria-live="polite"></div>
+      <section class="cf-sec">
+        <div class="cf-sec-head"><h3>The business</h3><p>Who they are. Industry is set once here and used everywhere: benchmarking, the profile and Claude's briefs.</p></div>
+        <div class="cf-grid">
+          <div class="cf-field span2"><label for="f_name">Client name <em>*</em></label><input class="form-input" id="f_name" placeholder="e.g. Meridian Fabrications Ltd" autocomplete="off" /></div>
+          <div class="cf-field "><label for="f_clientCode">Karbon code <em>*</em></label><input class="form-input" id="f_clientCode" placeholder="e.g. ABC001" autocomplete="off" /><small>Same code as Karbon</small></div>
+          <div class="cf-field "><label for="f_industry">Industry <em>*</em></label><select class="form-input client-industry-select" id="f_industry"><option value="">Select industry</option><option>Service</option><option>Retail</option><option>Wholesale</option><option>Manufacturing</option><option>Construction</option><option>Rental</option></select><small>Benchmarking peer group</small></div>
+          <div class="cf-field span2"><label for="f_industrySubcategory">Specialism</label><input class="form-input" id="f_industrySubcategory" placeholder="e.g. Structural steel fabrication for commercial construction" autocomplete="off" /><small>What they actually do, in a few words</small></div>
+          <div class="cf-field span2"><label for="f_geography">Geography</label><input class="form-input" id="f_geography" placeholder="e.g. Midlands, UK — exports to Northern Europe" autocomplete="off" /></div>
+          <div class="cf-field "><label for="f_employeeCount">Employees (FTE)</label><input class="form-input" id="f_employeeCount" placeholder="e.g. 42" autocomplete="off" type="number" min="0" step="1" /></div>
+          <div class="cf-field "><label for="f_benchmarkRevenueBand">Revenue band</label><select class="form-input" id="f_benchmarkRevenueBand"><option value="">Not set</option><option value="under_1m">Under £1m</option><option value="1m_2m">£1m–£2m</option><option value="2m_5m">£2m–£5m</option><option value="5m_10m">£5m–£10m</option><option value="10m_25m">£10m–£25m</option><option value="25m_plus">£25m+</option></select></div>
+          <div class="cf-field "><label for="f_financialYearEnd">Year end</label><input class="form-input" id="f_financialYearEnd" placeholder="e.g. 31 March" autocomplete="off" /></div>
+          <div class="cf-field "><label for="f_currency">Currency</label><select class="form-input" id="f_currency"><option value="GBP">GBP</option><option value="EUR">EUR</option><option value="USD">USD</option></select></div>
         </div>
-        <div class="form-group">
-          <div class="client-field-label"><label class="form-label" for="f_industrySubcategory">Industry Subcategory</label><button class="client-help" type="button" aria-label="Help for Industry Subcategory" data-help="Add the narrower trading activity used to refine a benchmark cohort. Format: Structural steel fabrication or B2B software consultancy.">?</button></div>
-          <input class="form-input" id="f_industrySubcategory" placeholder="e.g. Structural steel fabrication" />
+      </section>
+      <section class="cf-sec">
+        <div class="cf-sec-head"><h3>Rhythm</h3><p>How often the numbers arrive, how often you check in, and how often the full advisory review happens.</p></div>
+        <div class="cf-grid three">
+          <div class="cf-field "><label for="f_reportingFrequency">Management accounts</label><select class="form-input" id="f_reportingFrequency"><option value="monthly">Monthly</option><option value="quarterly">Quarterly</option><option value="annual">Annual</option></select></div>
+          <div class="cf-field "><label for="f_touchpointFrequency">Touchpoints</label><select class="form-input" id="f_touchpointFrequency"><option value="none">None</option><option value="monthly">Monthly</option><option value="quarterly">Quarterly</option></select><small>Lighter check-ins</small></div>
+          <div class="cf-field "><label for="f_advisoryReviewFrequency">Formal review</label><select class="form-input" id="f_advisoryReviewFrequency"><option value="monthly">Monthly</option><option value="quarterly">Quarterly</option><option value="six_monthly">Six-monthly</option><option value="annual">Annual</option></select><small>Full advisory meeting</small></div>
         </div>
-        <div class="form-group">
-          <div class="client-field-label"><label class="form-label" for="f_financialYearEnd">Financial Year End</label><button class="client-help" type="button" aria-label="Help for Financial Year End" data-help="Enter the month and day on which the client’s statutory financial year closes. Format: 31 March.">?</button></div>
-          <input class="form-input" id="f_financialYearEnd" placeholder="e.g. 31 March" />
+      </section>
+      <section class="cf-sec">
+        <div class="cf-sec-head"><h3>Market context</h3><p>Separate entries with commas. Claude watches these for the intelligence brief.</p></div>
+        <div class="cf-grid">
+          <div class="cf-field span2"><label for="f_competitors">Competitors</label><input class="form-input" id="f_competitors" placeholder="e.g. Barrett Steel, Severfield PLC" autocomplete="off" /></div>
+          <div class="cf-field span2"><label for="f_keyCustomers">Key customers</label><input class="form-input" id="f_keyCustomers" placeholder="e.g. Balfour Beatty, Kier Group" autocomplete="off" /><small>From aged receivables</small></div>
+          <div class="cf-field span2"><label for="f_keySuppliers">Key suppliers</label><input class="form-input" id="f_keySuppliers" placeholder="e.g. Tata Steel UK, British Steel" autocomplete="off" /><small>From aged payables</small></div>
+          <div class="cf-field span2"><label for="f_regulatoryBodies">Regulators &amp; trade bodies</label><input class="form-input" id="f_regulatoryBodies" placeholder="e.g. HSE, BCSA" autocomplete="off" /></div>
+          <div class="cf-field span4"><label for="f_watchTriggers">Watch for</label><input class="form-input" id="f_watchTriggers" placeholder="e.g. steel tariffs, UK construction output" autocomplete="off" /></div>
         </div>
-        <div class="form-group">
-          <div class="client-field-label"><label class="form-label" for="f_reportingFrequency">Reporting Frequency</label><button class="client-help" type="button" aria-label="Help for Reporting Frequency" data-help="Select how frequently management financial data is normally produced.">?</button></div>
-          <select class="form-input" id="f_reportingFrequency"><option value="monthly">Monthly</option><option value="quarterly">Quarterly</option><option value="annual">Annual</option></select>
-        </div>
-        <div class="form-group client-cadence-field">
-          <div class="client-field-label"><label class="form-label" for="f_touchpointFrequency">Client Touchpoints</label><button class="client-help" type="button" aria-label="Help for Client Touchpoints" data-help="How often a lighter client touchpoint normally takes place. Touchpoints are not full advisory meetings and do not create a Journey snapshot.">?</button></div>
-          <select class="form-input" id="f_touchpointFrequency"><option value="none">No Regular Touchpoint</option><option value="monthly">Monthly</option><option value="quarterly">Quarterly</option></select>
-        </div>
-        <div class="form-group client-cadence-field">
-          <div class="client-field-label"><label class="form-label" for="f_advisoryReviewFrequency">Formal Advisory Review</label><button class="client-help" type="button" aria-label="Help for Formal Advisory Review" data-help="How often the client has the deeper formal advisory review. Financial insights are synthesised across this review period.">?</button></div>
-          <select class="form-input" id="f_advisoryReviewFrequency"><option value="monthly">Monthly</option><option value="quarterly">Quarterly</option><option value="six_monthly">Six-Monthly</option><option value="annual">Annual</option></select>
-        </div>
-        <div class="client-cadence-note"><strong>Cadence model:</strong> Financial Reporting controls how often actual management accounts are entered. Client Touchpoints control lighter relationship conversations. Formal Advisory Review controls the period over which deeper financial insights are synthesised for the full advisory meeting.</div>
-        <div class="form-group">
-          <div class="client-field-label"><label class="form-label" for="f_currency">Currency</label><button class="client-help" type="button" aria-label="Help for Currency" data-help="Select the reporting currency used in imported financial information.">?</button></div>
-          <select class="form-input" id="f_currency"><option value="GBP">GBP</option><option value="EUR">EUR</option><option value="USD">USD</option></select>
-        </div>
-        <div class="form-group">
-          <div class="client-field-label"><label class="form-label" for="f_employeeCount">Full-Time Employees</label><button class="client-help" type="button" aria-label="Help for Employees" data-help="Enter the latest average full-time-equivalent employee count. Format: 42.">?</button></div>
-          <input class="form-input" id="f_employeeCount" type="number" min="0" step="1" placeholder="e.g. 42" />
-        </div>
-        <div class="form-group">
-          <div class="client-field-label"><label class="form-label" for="f_benchmarkRevenueBand">Benchmark Revenue Band</label><button class="client-help" type="button" aria-label="Help for Benchmark Revenue Band" data-help="Select the size band that should eventually be used alongside industry when creating a peer cohort.">?</button></div>
-          <select class="form-input" id="f_benchmarkRevenueBand"><option value="">Not Set</option><option value="under_1m">Under £1m</option><option value="1m_2m">£1m–£2m</option><option value="2m_5m">£2m–£5m</option><option value="5m_10m">£5m–£10m</option><option value="10m_25m">£10m–£25m</option><option value="25m_plus">£25m+</option></select>
-        </div>
-      </div>
-      <div class="form-group">
-        <div class="client-field-label"><label class="form-label" for="f_subSector">Sub-sector</label><button class="client-help" type="button" aria-label="Help for Sub-sector" data-help="Describe the client’s specific market niche, product or service specialism. Format: Structural steel for commercial construction.">?</button></div>
-        <input class="form-input" id="f_subSector" placeholder="e.g. Structural steel for commercial construction" />
-      </div>
-      <div class="form-group">
-        <div class="client-field-label"><label class="form-label" for="f_geography">Geography</label><button class="client-help" type="button" aria-label="Help for Geography" data-help="State the main operating region and any important export or customer markets. Format: Midlands, UK — exports to Northern Europe.">?</button></div>
-        <input class="form-input" id="f_geography" placeholder="e.g. Midlands, UK — exports to Northern Europe" />
-      </div>
-      <div class="form-group">
-        <div class="client-field-label"><label class="form-label" for="f_competitors">Competitors</label><button class="client-help" type="button" aria-label="Help for Competitors" data-help="List the most relevant direct or strategic competitors, separated by commas. Format: Barrett Steel, Severfield PLC.">?</button></div>
-        <input class="form-input" id="f_competitors" placeholder="e.g. Barrett Steel, Severfield PLC" />
-      </div>
-      <div class="form-group">
-        <div class="client-field-label"><label class="form-label" for="f_keyCustomers">Key Customers</label><button class="client-help" type="button" aria-label="Help for Key Customers" data-help="List major named customers or, where names are confidential, the principal customer types. Separate entries with commas. Format: Balfour Beatty, Kier Group.">?</button></div>
-        <input class="form-input" id="f_keyCustomers" placeholder="e.g. Balfour Beatty, Kier Group" />
-      </div>
-      <div class="form-group">
-        <div class="client-field-label"><label class="form-label" for="f_keySuppliers">Key Suppliers</label><button class="client-help" type="button" aria-label="Help for Key Suppliers" data-help="List strategically important suppliers or supply categories, separated by commas. Format: Tata Steel UK, British Steel.">?</button></div>
-        <input class="form-input" id="f_keySuppliers" placeholder="e.g. Tata Steel UK, British Steel" />
-      </div>
-      <div class="form-group">
-        <div class="client-field-label"><label class="form-label" for="f_regulatoryBodies">Regulatory Bodies</label><button class="client-help" type="button" aria-label="Help for Regulatory Bodies" data-help="List regulators, trade bodies or standards organisations relevant to the client, separated by commas. Format: HSE, BCSA.">?</button></div>
-        <input class="form-input" id="f_regulatoryBodies" placeholder="e.g. HSE, BCSA" />
-      </div>
-      <div class="form-group">
-        <div class="client-field-label"><label class="form-label" for="f_watchTriggers">Watch Triggers</label><button class="client-help" type="button" aria-label="Help for Watch Triggers" data-help="Enter specific developments the intelligence brief should monitor. Use concise comma-separated topics. Format: steel tariffs, UK construction output, major customer contract awards.">?</button></div>
-        <input class="form-input" id="f_watchTriggers" placeholder="e.g. steel tariffs, construction output UK" />
-      </div>
-      <div class="form-group">
-        <div class="client-field-label"><label class="form-label" for="f_advisoryNotes">Advisory Notes</label><button class="client-help" type="button" aria-label="Help for Advisory Notes" data-help="Record private advisory context that Claude could not reliably infer: ownership, strategic ambitions, exit plans, risks and upcoming events. Format: Owner-managed; considering exit in 3–5 years; covenant review due Q3.">?</button></div>
+      </section>
+      <section class="cf-sec">
+        <div class="cf-sec-head"><h3>Advisory notes</h3><p>Private context Claude can't find: ownership, ambitions, exit plans, upcoming events.</p></div>
         <textarea class="form-textarea" id="f_advisoryNotes" placeholder="e.g. Owner-managed, considering exit in 3–5 years. Covenant review due Q3."></textarea>
-        <div class="client-ai-status" id="clientAiStatus" aria-live="polite"></div>
-      </div>
+      </section>
     </div>
-    <div class="modal-footer client-modal-footer">
+    <div class="modal-footer client-modal-footer cf-foot">
       <button class="btn-secondary" onclick="closeModal()">Cancel</button>
       <div class="client-modal-actions">
-        <button class="btn-ai" id="pullClientClaudeBtn" onclick="pullClientInformationFromClaude()">Pull From Claude</button>
+        <button class="btn-ai" id="pullClientClaudeBtn" onclick="pullClientInformationFromClaude()" title="Suggests the business and market fields from the client name">Pull From Claude</button>
         <button class="btn-primary" onclick="saveClient()">Save Client</button>
       </div>
     </div>
@@ -2931,8 +2886,8 @@ if (latest) {
 function renderProfile(c) {
   document.getElementById('clientProfile').innerHTML = `
     <div class="client-name">${c.name}</div>${c.client_code?`<div class="client-code-display"><span>Client Code</span><strong>${escapeComparisonHtml(c.client_code)}</strong></div>`:''}
-    <div class="client-sector">${c.industry || c.sector}${c.industry_subcategory ? ` · ${c.industry_subcategory}` : ""}</div>
-    <div class="profile-section"><div class="section-label">Sub-sector</div><div class="section-text">${c.subSector||c.sub_sector||'—'}</div></div>
+    <div class="client-sector">${c.industry || c.sector || ''}${clientSpecialism(c) ? ` · ${clientSpecialism(c)}` : ""}</div>
+    
     <div class="profile-section"><div class="section-label">Geography</div><div class="section-text">${c.geography||'—'}</div></div>
     <div class="profile-section"><div class="section-label">Competitors</div><div class="tags">${(c.competitors||[]).map(t=>`<span class="tag tag-competitor">${t}</span>`).join('')}</div></div>
     <div class="profile-section"><div class="section-label">Key Customers</div><div class="tags">${(c.keyCustomers||[]).map(t=>`<span class="tag tag-customer">${t}</span>`).join('')}</div></div>
@@ -2943,8 +2898,8 @@ function renderProfile(c) {
  
 function openAddModal() {
   modalMode = 'add';
-  document.getElementById('modalTitle').textContent = 'Add New Client';
-  ['f_name','f_clientCode','f_industry','f_industrySubcategory','f_financialYearEnd','f_reportingFrequency','f_touchpointFrequency','f_advisoryReviewFrequency','f_currency','f_employeeCount','f_benchmarkRevenueBand','f_subSector','f_geography','f_competitors','f_keyCustomers','f_keySuppliers','f_regulatoryBodies','f_watchTriggers','f_advisoryNotes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('modalTitle').textContent = 'Add client';
+  ['f_name','f_clientCode','f_industry','f_industrySubcategory','f_financialYearEnd','f_reportingFrequency','f_touchpointFrequency','f_advisoryReviewFrequency','f_currency','f_employeeCount','f_benchmarkRevenueBand','f_geography','f_competitors','f_keyCustomers','f_keySuppliers','f_regulatoryBodies','f_watchTriggers','f_advisoryNotes'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('f_reportingFrequency').value='monthly'; document.getElementById('f_touchpointFrequency').value='monthly'; document.getElementById('f_advisoryReviewFrequency').value='quarterly'; document.getElementById('f_currency').value='GBP';
   setClientAiStatus('');
   document.getElementById('clientModal').classList.remove('hidden');
@@ -2952,32 +2907,49 @@ function openAddModal() {
  
 function openEditModal() {
   modalMode = 'edit';
-  document.getElementById('modalTitle').textContent = 'Edit Client';
   const c = CLIENTS[currentIdx];
-  document.getElementById('f_name').value = c.name;
-  document.getElementById('f_clientCode').value = c.client_code || '';
-  document.getElementById('f_industry').value = c.industry || '';
-  document.getElementById('f_industrySubcategory').value = c.industry_subcategory || '';
-  document.getElementById('f_financialYearEnd').value = c.financial_year_end || '';
-  document.getElementById('f_reportingFrequency').value = c.reporting_frequency || 'monthly';
-  document.getElementById('f_touchpointFrequency').value = c.touchpoint_frequency || 'monthly';
-  document.getElementById('f_advisoryReviewFrequency').value = c.advisory_review_frequency || 'quarterly';
-  document.getElementById('f_currency').value = c.currency || 'GBP';
-  document.getElementById('f_employeeCount').value = c.employee_count ?? '';
-  document.getElementById('f_benchmarkRevenueBand').value = c.benchmark_revenue_band || '';
-  document.getElementById('f_subSector').value = c.subSector;
-  document.getElementById('f_geography').value = c.geography;
-  document.getElementById('f_competitors').value = c.competitors.join(', ');
-  document.getElementById('f_keyCustomers').value = c.keyCustomers.join(', ');
-  document.getElementById('f_keySuppliers').value = c.keySuppliers.join(', ');
-  document.getElementById('f_regulatoryBodies').value = c.regulatoryBodies.join(', ');
-  document.getElementById('f_watchTriggers').value = c.watchTriggers.join(', ');
-  document.getElementById('f_advisoryNotes').value = c.advisoryNotes;
+  if (!c) return;
+  document.getElementById('modalTitle').textContent = c.name ? `Edit ${c.name}` : 'Edit client';
+  const set = (id, v) => { document.getElementById(id).value = v ?? ''; };
+  const list = v => Array.isArray(v) ? v.join(', ') : (v || '');
+  set('f_name', c.name);
+  set('f_clientCode', c.client_code);
+  set('f_industry', c.industry || c.sector);
+  set('f_industrySubcategory', clientSpecialism(c));
+  set('f_financialYearEnd', c.financial_year_end);
+  set('f_reportingFrequency', c.reporting_frequency || 'monthly');
+  set('f_touchpointFrequency', c.touchpoint_frequency || 'monthly');
+  set('f_advisoryReviewFrequency', c.advisory_review_frequency || 'quarterly');
+  set('f_currency', c.currency || 'GBP');
+  set('f_employeeCount', c.employee_count);
+  set('f_benchmarkRevenueBand', c.benchmark_revenue_band);
+  set('f_geography', c.geography);
+  set('f_competitors', list(c.competitors));
+  set('f_keyCustomers', list(c.keyCustomers));
+  set('f_keySuppliers', list(c.keySuppliers));
+  set('f_regulatoryBodies', list(c.regulatoryBodies));
+  set('f_watchTriggers', list(c.watchTriggers));
+  set('f_advisoryNotes', c.advisoryNotes || c.advisory_notes);
   setClientAiStatus('');
   document.getElementById('clientModal').classList.remove('hidden');
 }
+
+/* The single specialism for a client. Older records may hold it in industry_subcategory,
+   subSector or both; distinct values are kept together so nothing is lost on the next save. */
+function clientSpecialism(c) {
+  const vals = [c?.industry_subcategory, c?.subSector, c?.sub_sector].map(v => String(v || '').trim()).filter(Boolean);
+  const out = [];
+  vals.forEach(v => {
+    const lv = v.toLowerCase();
+    if (out.some(o => o.toLowerCase().includes(lv))) return;
+    for (let i = out.length - 1; i >= 0; i--) if (lv.includes(out[i].toLowerCase())) out.splice(i, 1);
+    out.push(v);
+  });
+  return out.join(' — ');
+}
  
-function closeModal() { document.getElementById('clientModal').classList.add('hidden'); hideClientHelpTooltip(); }
+function closeModal() { document.getElementById('clientModal').classList.add('hidden'); hideClientHelpTooltip(); document.querySelectorAll('#clientModal .cf-filled').forEach(el => el.classList.remove('cf-filled')); setClientAiStatus(''); }
+document.addEventListener('input', e => { if (e.target.classList?.contains('cf-filled')) e.target.classList.remove('cf-filled'); });
 
 let clientHelpTooltip = null;
 function ensureClientHelpTooltip() {
@@ -3026,93 +2998,142 @@ document.addEventListener('focusout', event => {
 });
 window.addEventListener('scroll', hideClientHelpTooltip, true);
 window.addEventListener('resize', hideClientHelpTooltip);
- function setClientAiStatus(message, type='') {
+function setClientAiStatus(message, type = '', html = '') {
   const el = document.getElementById('clientAiStatus');
   if (!el) return;
-  el.textContent = message || '';
+  if (html) el.innerHTML = html; else el.textContent = message || '';
   el.className = `client-ai-status${type ? ` ${type}` : ''}`;
 }
 
 async function pullClientInformationFromClaude() {
   const apiKey = document.getElementById('apiKey').value.trim();
-  const name = document.getElementById('f_name').value.trim();
-  if (!apiKey) { alert('Enter your Anthropic API key first.'); return; }
-  if (!name) { alert('Enter the client name first so Claude knows which business to assess.'); return; }
+  const val = id => document.getElementById(id).value.trim();
+  const name = val('f_name');
+  if (!apiKey) { alert('Enter your Anthropic API key in Settings first.'); return; }
+  if (!name) { alert('Enter the client name first so Claude knows which business to research.'); document.getElementById('f_name').focus(); return; }
 
   const button = document.getElementById('pullClientClaudeBtn');
-  const existing = {
-    industry: document.getElementById('f_industry').value,
-    industrySubcategory: document.getElementById('f_industrySubcategory').value.trim(),
-    subSector: document.getElementById('f_subSector').value.trim(),
-    geography: document.getElementById('f_geography').value.trim(),
-    competitors: document.getElementById('f_competitors').value.trim(),
-    keyCustomers: document.getElementById('f_keyCustomers').value.trim(),
-    keySuppliers: document.getElementById('f_keySuppliers').value.trim(),
-    regulatoryBodies: document.getElementById('f_regulatoryBodies').value.trim(),
-    watchTriggers: document.getElementById('f_watchTriggers').value.trim(),
-    advisoryNotes: document.getElementById('f_advisoryNotes').value.trim()
+  const known = {
+    industry: val('f_industry'), specialism: val('f_industrySubcategory'), geography: val('f_geography'),
+    financialYearEnd: val('f_financialYearEnd'), employeeCount: val('f_employeeCount'),
+    competitors: val('f_competitors'),
+    regulatoryBodies: val('f_regulatoryBodies'), watchTriggers: val('f_watchTriggers'), advisorNotes: val('f_advisoryNotes')
   };
+  Object.keys(known).forEach(k => { if (!known[k]) delete known[k]; });
   button.disabled = true;
-  button.textContent = 'Pulling From Claude…';
-  setClientAiStatus('Claude is preparing suggested client information. Existing entries will only be replaced where a useful suggestion is returned.');
+  button.textContent = 'Researching…';
+  setClientAiStatus('Claude is searching Companies House, the company website and the wider web. This usually takes 20–60 seconds.', 'busy');
 
-  const prompt = `You are helping a UK business advisory firm prepare a client profile.
+  const prompt = `You are researching a UK business for an advisory firm's client profile. Use web search.
 
-Client name: ${name}
-Existing advisor-entered information:
-${JSON.stringify(existing, null, 2)}
+Business: ${name}
+${Object.keys(known).length ? `What the advisor already knows (use it to find the right company):\n${JSON.stringify(known, null, 2)}\n` : ''}
+Research steps:
+1. Find the company on Companies House (find-and-update.company-information.service.gov.uk): company number, status, registered office, SIC codes, accounting reference date (year end), and employee numbers or turnover from the latest filed accounts if shown.
+2. Find the company's own website: what they actually do and which sectors they serve.
+3. Identify 3 direct UK competitors of a similar size and specialism.
+4. Identify the 2–4 regulators and standards bodies that matter for this type of business.
+5. Decide which markets and developments drive demand and costs for this business.
 
-Return concise suggested values for the fields below. For industry, use exactly one of: Service, Retail, Wholesale, Manufacturing, Construction, Rental. Preserve reliable existing information. Do not invent confidential facts, private ownership details, customer relationships, suppliers or strategic plans. If you are not sufficiently confident about a field, return an empty string or empty array. Advisory notes must include only context already supplied by the advisor; do not infer private matters.
+If several companies share the name, prefer the one matching the advisor's details; otherwise pick the most likely active UK trading company and say so in "matchNote".
+Competitors, regulators and watch triggers can be reasoned from the sector even when the company has little online presence. Do not research customers or suppliers: the advisor adds those from the aged receivables and payables.
 
-Return ONLY valid JSON using this exact structure:
+House style. This is a finished profile for a different client; match its length, tone and level of detail:
+  Specialism: Precision Engineering & CNC Manufacturing
+  Geography: UK, National / International
+  Competitors: D&S Engineering, NC Engineering, PP Control & Automation
+  Regulatory bodies: HSE, BSI, Environment Agency
+  Watch triggers: UK automotive & motorsport manufacturing; Aerospace & defence manufacturing; Engineering & manufacturing demand; CNC machinery & technology; Engineering skills & labour; Competitor developments
+  Advisory notes: Precision engineering group providing CNC machining, tooling and manufacturing solutions across automotive, motorsport, defence and other specialist sectors. Prioritise engineering demand, customer sectors, capital investment, skills and competitor activity.
+
+Rules for the style:
+- Specialism: a short title-case category (3–6 words), not a sentence.
+- Geography: base and reach in a few words, e.g. "Leeds, UK / National".
+- Watch triggers: 5–6 short topic headings: the client's customer sectors, their own market's demand, key inputs or technology, skills and labour, and always end with "Competitor developments".
+- Advisory notes: exactly two sentences. First, what the business does and for whom. Second, "Prioritise ..." listing the 4–5 themes the advisor should watch.
+
+When you have finished searching, reply with ONLY this JSON object, with no prose, citations or code fences:
 {
-  "industry": "",
-  "industrySubcategory": "",
-  "subSector": "",
+  "companyName": "registered name as found",
+  "companyNumber": "",
+  "website": "",
+  "matchNote": "one short sentence on how sure you are this is the right company",
+  "industry": "exactly one of: Service, Retail, Wholesale, Manufacturing, Construction, Rental",
+  "specialism": "",
   "geography": "",
+  "financialYearEnd": "e.g. 31 March, from Companies House",
+  "employeeCount": null,
+  "revenueBand": "one of: under_1m, 1m_2m, 2m_5m, 5m_10m, 10m_25m, 25m_plus, or empty if unknown",
   "competitors": [],
-  "keyCustomers": [],
-  "keySuppliers": [],
   "regulatoryBodies": [],
   "watchTriggers": [],
-  "advisoryNotes": ""
-}
-
-Use short business-ready wording. Arrays must contain plain strings. No markdown, code fences or explanation.`;
+  "advisoryNotes": "",
+  "sources": [{"title": "", "url": ""}]
+}`;
 
   try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type':'application/json', 'x-api-key':apiKey, 'anthropic-version':'2023-06-01', 'anthropic-dangerous-direct-browser-access':'true' },
-      body: JSON.stringify({ model:'claude-sonnet-4-6', max_tokens:1200, messages:[{ role:'user', content:prompt }] })
-    });
-    if (!resp.ok) {
-      const detail = await resp.text();
-      throw new Error(`Claude request failed (${resp.status}): ${detail.slice(0, 180)}`);
+    const messages = [{ role: 'user', content: prompt }];
+    let payload;
+    for (let turn = 0; turn < 4; turn++) {
+      const resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type':'application/json', 'x-api-key':apiKey, 'anthropic-version':'2023-06-01', 'anthropic-dangerous-direct-browser-access':'true' },
+        body: JSON.stringify({ model:'claude-sonnet-4-6', max_tokens:4000, tools:[{ type:'web_search_20250305', name:'web_search', max_uses:8, user_location:{ type:'approximate', country:'GB' } }], messages })
+      });
+      if (!resp.ok) {
+        const detail = await resp.text();
+        throw new Error(`Claude request failed (${resp.status}): ${detail.slice(0, 180)}`);
+      }
+      payload = await resp.json();
+      if (payload.stop_reason !== 'pause_turn') break;
+      messages.push({ role: 'assistant', content: payload.content });
     }
-    const payload = await resp.json();
-    const text = (payload.content || []).filter(part => part.type === 'text').map(part => part.text).join('\n');
-    const result = extractClaudeJson(text);
-    const setText = (id, value) => { if (typeof value === 'string' && value.trim()) document.getElementById(id).value = value.trim(); };
-    const setList = (id, value) => {
-      const items = Array.isArray(value) ? value : (typeof value === 'string' ? splitCSV(value) : []);
-      if (items.length) document.getElementById(id).value = items.map(item => String(item).trim()).filter(Boolean).join(', ');
+    // Searches can leave earlier narrative text in the reply; the JSON is the text after the last search result.
+    const blocks = payload.content || [];
+    const lastTool = blocks.map(b => b.type).lastIndexOf('web_search_tool_result');
+    const tail = blocks.slice(lastTool + 1).filter(b => b.type === 'text').map(b => b.text).join('');
+    const result = extractClaudeJson(tail.includes('{') ? tail : blocks.filter(b => b.type === 'text').map(b => b.text).join(''));
+
+    const filled = [], kept = [];
+    const field = id => document.getElementById(id);
+    const put = (id, value, label) => {
+      if (value === null || value === undefined || String(value).trim() === '') return;
+      const el = field(id);
+      if (el.value.trim()) { if (el.value.trim() !== String(value).trim()) kept.push(label); return; }
+      el.value = String(value).trim();
+      el.classList.add('cf-filled');
+      filled.push(label);
     };
-    if (typeof result.industry === 'string' && [...document.getElementById('f_industry').options].some(o=>o.value===result.industry)) document.getElementById('f_industry').value=result.industry;
-    setText('f_industrySubcategory', result.industrySubcategory);
-    setText('f_subSector', result.subSector);
-    setText('f_geography', result.geography);
-    setList('f_competitors', result.competitors);
-    setList('f_keyCustomers', result.keyCustomers);
-    setList('f_keySuppliers', result.keySuppliers);
-    setList('f_regulatoryBodies', result.regulatoryBodies);
-    setList('f_watchTriggers', result.watchTriggers);
-    setText('f_advisoryNotes', result.advisoryNotes);
-    setClientAiStatus('Suggestions added. Review and edit every field before saving.', 'success');
+    const list = v => (Array.isArray(v) ? v : (typeof v === 'string' ? splitCSV(v) : [])).map(x => String(x).trim()).filter(Boolean).join(', ');
+    const pick = (id, v) => [...field(id).options].some(o => o.value === v) ? v : '';
+    put('f_industry', pick('f_industry', result.industry), 'industry');
+    put('f_industrySubcategory', result.specialism, 'specialism');
+    put('f_geography', result.geography, 'geography');
+    put('f_financialYearEnd', result.financialYearEnd, 'year end');
+    const emp = parseInt(String(result.employeeCount ?? '').replace(/[^\d]/g, ''), 10);
+    put('f_employeeCount', Number.isFinite(emp) && emp > 0 ? emp : '', 'employees');
+    put('f_benchmarkRevenueBand', pick('f_benchmarkRevenueBand', result.revenueBand), 'revenue band');
+    put('f_competitors', list(result.competitors), 'competitors');
+    put('f_regulatoryBodies', list(result.regulatoryBodies), 'regulators');
+    put('f_watchTriggers', list(result.watchTriggers), 'watch triggers');
+    put('f_advisoryNotes', result.advisoryNotes, 'advisory notes');
+
+    const esc = v => String(v ?? '').replace(/[&<>"']/g, ch => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[ch]));
+    const safeUrl = u => /^https?:\/\//i.test(String(u || '')) ? String(u) : '';
+    const sources = (Array.isArray(result.sources) ? result.sources : []).filter(x => safeUrl(x?.url)).slice(0, 5);
+    const match = [result.companyName, result.companyNumber ? `Company no. ${result.companyNumber}` : ''].filter(Boolean).join(' · ');
+    const head = filled.length
+      ? `<strong>Filled ${filled.length} field${filled.length === 1 ? '' : 's'}</strong> (${esc(filled.join(', '))}), highlighted in gold. Check them before saving.`
+      : '<strong>Claude couldn\'t add anything new.</strong> Try adding the town or website to Geography and pull again.';
+    setClientAiStatus('', filled.length ? 'success' : 'error', `
+      <div>${head}</div>
+      ${match ? `<div>Matched: ${esc(match)}${result.matchNote ? ` — ${esc(result.matchNote)}` : ''}</div>` : ''}
+      ${kept.length ? `<div>Kept what you'd already entered for ${esc(kept.join(', '))}.</div>` : ''}
+      ${sources.length || safeUrl(result.website) ? `<div class="cf-sources">Sources: ${[safeUrl(result.website) ? { title:'Company website', url:result.website } : null, ...sources].filter(Boolean).map(x => `<a href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener">${esc(x.title || x.url)}</a>`).join('')}</div>` : ''}`);
+    document.getElementById('clientAiStatus').scrollIntoView({ block: 'nearest' });
   } catch (error) {
     console.error('Failed to pull client information from Claude:', error);
-    setClientAiStatus('Claude could not prepare the client information. Check the API key and try again.', 'error');
-    alert(error.message || 'Claude could not prepare the client information.');
+    setClientAiStatus(error.message || 'Claude could not research this client. Check the API key and try again.', 'error');
   } finally {
     button.disabled = false;
     button.textContent = 'Pull From Claude';
@@ -3147,6 +3168,7 @@ async function saveClient() {
         sector: industry,
         industry,
         industry_subcategory: document.getElementById('f_industrySubcategory').value.trim(),
+        subSector: document.getElementById('f_industrySubcategory').value.trim(),
         financial_year_end: document.getElementById('f_financialYearEnd').value.trim(),
         reporting_frequency: document.getElementById('f_reportingFrequency').value,
         touchpoint_frequency: document.getElementById('f_touchpointFrequency').value,
@@ -3154,7 +3176,6 @@ async function saveClient() {
         currency: document.getElementById('f_currency').value,
         employee_count: document.getElementById('f_employeeCount').value ? Number(document.getElementById('f_employeeCount').value) : null,
         benchmark_revenue_band: document.getElementById('f_benchmarkRevenueBand').value,
-        subSector: document.getElementById('f_subSector').value.trim(),
         geography: document.getElementById('f_geography').value.trim(),
         competitors: splitCSV(document.getElementById('f_competitors').value),
         keyCustomers: splitCSV(document.getElementById('f_keyCustomers').value),
@@ -3278,8 +3299,8 @@ You are an intelligence analyst for a UK business advisory firm.
  
 Client:
 - ${c.name}
-- Sector: ${c.sector}
-- Sub-sector: ${c.subSector}
+- Industry: ${c.industry || c.sector}
+- Specialism: ${clientSpecialism(c)}
 - Geography: ${c.geography}
  
 Competitors:
@@ -8080,6 +8101,45 @@ html body{background:var(--ap-ground)!important;margin:0}
 }
 @media print{.ap-top,.ap-tabs,.ap-client-actions{display:none!important}}
 
+/* Add / edit client */
+#clientModal .cf-modal{max-width:860px;background:var(--ap-panel);border:1px solid var(--ap-line);border-radius:14px}
+#clientModal .cf-head{align-items:flex-start;padding:18px 24px 14px;border-bottom:1px solid var(--ap-line)}
+#clientModal .cf-kicker{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#d5b94c;font-weight:800;margin-bottom:4px}
+#clientModal .cf-head .modal-title{font-size:19px;font-weight:800;color:#f4f7f8}
+#clientModal .cf-body{gap:12px;padding:16px 24px 20px;background:var(--ap-ground)}
+#clientModal .cf-sec{border:1px solid var(--ap-line);border-radius:12px;background:var(--ap-card);padding:14px 16px 16px}
+#clientModal .cf-sec-head{margin-bottom:12px}
+#clientModal .cf-sec-head h3{margin:0;font-size:13px;font-weight:800;color:#eef3f5}
+#clientModal .cf-sec-head p{margin:3px 0 0;font-size:11px;line-height:1.5;color:#8299a5}
+#clientModal .cf-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px 12px}
+#clientModal .cf-field{display:flex;flex-direction:column;gap:5px;min-width:0}
+#clientModal .cf-field.span2{grid-column:span 2}
+#clientModal .cf-field.span4{grid-column:1/-1}
+#clientModal .cf-field label{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#9bb0bb;font-weight:800}
+#clientModal .cf-field label em{color:#d5b94c;font-style:normal}
+#clientModal .cf-field small{font-size:10px;color:#6f8895;line-height:1.35}
+#clientModal .form-input,#clientModal .form-textarea{width:100%;box-sizing:border-box;background:#071923;border:1px solid #315063;color:#eef4f6;border-radius:8px;padding:9px 10px;font:inherit;font-size:13px}
+#clientModal .form-input:focus,#clientModal .form-textarea:focus{outline:none;border-color:#d5b94c;box-shadow:0 0 0 2px rgba(213,185,76,.18)}
+#clientModal .form-textarea{min-height:90px;resize:vertical}
+#clientModal .cf-foot{border-top:1px solid var(--ap-line);padding:14px 24px;background:var(--ap-panel)}
+@media(max-width:760px){#clientModal .cf-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#clientModal .cf-field.span2{grid-column:1/-1}#clientModal .cf-head,#clientModal .cf-body,#clientModal .cf-foot{padding-left:16px;padding-right:16px}}
+@media(max-width:460px){#clientModal .cf-grid{grid-template-columns:1fr}}
+#clientModal .cf-grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+#clientModal select.form-input,#clientModal input.form-input{height:38px}
+@media(max-width:760px){#clientModal .cf-grid.three{grid-template-columns:1fr}}
+@media(max-width:460px){#clientModal .cf-foot{flex-direction:column-reverse;align-items:stretch;gap:8px}#clientModal .cf-foot .client-modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}#clientModal .cf-foot button{width:100%}}
+#clientModal .client-ai-status{margin:0;font-size:12px;line-height:1.5;color:#b8c8d0}
+#clientModal .client-ai-status:empty{display:none}
+#clientModal .client-ai-status:not(:empty){padding:10px 12px;border-radius:10px;border:1px solid #345466;background:#102b38}
+#clientModal .client-ai-status.busy{border-color:rgba(213,185,76,.45)}
+#clientModal .client-ai-status.success{border-color:#416f4c;background:#12251a;color:#cfe9d5}
+#clientModal .client-ai-status.error{border-color:#78454d;background:#2a171d;color:#ffc4c4}
+#clientModal .client-ai-status div+div{margin-top:4px}
+#clientModal .client-ai-status strong{color:#f4f7f8}
+#clientModal .cf-sources a{color:#d5b94c;margin-left:8px;text-decoration:underline;text-underline-offset:2px;word-break:break-word}
+#clientModal .form-input.cf-filled{border-color:#d5b94c;background:#141f17}
+#clientModal .cf-body>*{flex-shrink:0}
+
 </style>
 <script id="advisor-portal-v4-script">
 /* ==========================================================================
@@ -8318,7 +8378,7 @@ function apTabsHtml(){
 function apClientHeadHtml(){
   const c=apClient();if(!c)return '';
   const draft=apDraftMeeting();
-  const meta=[c.client_code?`<b>${apH(c.client_code)}</b>`:'',apH([c.industry||c.sector,c.industry_subcategory].filter(Boolean).join(' · ')),c.advisory_review_frequency?`${apH(cadenceLabel(c.advisory_review_frequency))} reviews`:''].filter(Boolean).map(x=>`<span>${x}</span>`).join('');
+  const meta=[c.client_code?`<b>${apH(c.client_code)}</b>`:'',apH([c.industry||c.sector,clientSpecialism(c)].filter(Boolean).join(' · ')),c.advisory_review_frequency?`${apH(cadenceLabel(c.advisory_review_frequency))} reviews`:''].filter(Boolean).map(x=>`<span>${x}</span>`).join('');
   return `<div class="ap-client-id"><span class="ap-client-kicker">Client workspace</span><h1 class="ap-client-name">${apH(c.name)}</h1><div class="ap-client-meta">${meta}</div></div><div class="ap-client-actions"><button class="ap-btn" type="button" onclick="apOpenClientDrawer()">Client details</button><button class="ap-btn" type="button" onclick="startNewTouchpoint()">Record touchpoint</button><button class="ap-btn primary" type="button" onclick="apOpenMeeting()">${draft?'Resume meeting':'Start meeting'}</button></div>`;
 }
 function apLoadingHtml(){return `<div class="ap-page"><div class="ap-card"><div class="ap-skel" style="width:40%"></div><div class="ap-skel"></div><div class="ap-skel" style="width:75%"></div></div><div class="ap-grid ap-g-2"><div class="ap-card"><div class="ap-skel" style="width:50%"></div><div class="ap-skel"></div></div><div class="ap-card"><div class="ap-skel" style="width:50%"></div><div class="ap-skel"></div></div></div></div>`}
