@@ -2419,6 +2419,8 @@ button.combined-position-card:hover{border-color:#3a6071;background:linear-gradi
   <div class="ap-top-actions">
     <button class="ap-iconbtn" id="decisionLibraryLaunch" type="button" onclick="toggleDecisionLibrary(true)" title="Firm-wide Decision Moment Library"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 3h4v10h-4zM9.5 3h4v10h-4z"/></svg><span class="lbl">Decision library</span></button>
     <button class="ap-iconbtn" id="apSettingsBtn" type="button" onclick="apToggleSettings()" aria-haspopup="true" aria-controls="apSettings"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="2.2"/><path d="M8 1.8v1.7M8 12.5v1.7M1.8 8h1.7M12.5 8h1.7M3.6 3.6l1.2 1.2M11.2 11.2l1.2 1.2M3.6 12.4l1.2-1.2M11.2 4.8l1.2-1.2"/></svg><span class="lbl">Settings</span></button>
+    <span id="signedInAs" style="font-size:11px;opacity:.75;white-space:nowrap"></span>
+    <button class="ap-iconbtn" id="signOutBtn" type="button" onclick="signOutOfHub()" title="Sign out"><span class="lbl">Sign out</span></button>
   </div>
   <div class="ap-popover" id="apSettings" hidden>
     <label for="apiKey">Anthropic API key</label>
@@ -2806,6 +2808,7 @@ async function init() {
  
     if (error) {
         console.error(error);
+        showAccessMessage('Could not load clients', 'Something went wrong reading the client list. Try again, or sign out and back in.');
         return;
     }
  
@@ -5333,7 +5336,78 @@ document.getElementById('briefingHistory').addEventListener('keydown', (e) => {
     e.preventDefault();
     loadBriefingById(entry.dataset.briefingId);
 });
-init();
+
+// ---- Sign-in ---------------------------------------------------------------------------
+// The hub only shows data to people signed in with their Oldfield Microsoft account.
+// The database enforces this (staff-only rules on every table); this screen is just the door.
+const STAFF_EMAIL_ENDING = '@oldfieldadvisory.com';
+
+function showAccessMessage(title, text, buttonLabel, buttonAction) {
+  const panel = document.getElementById('mainPanel');
+  panel.innerHTML = '<div class="empty-state"><h2></h2><p></p></div>';
+  panel.querySelector('h2').textContent = title;
+  panel.querySelector('p').textContent = text;
+  if (buttonLabel) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'ap-btn primary';
+    button.style.marginTop = '16px';
+    button.textContent = buttonLabel;
+    button.onclick = buttonAction;
+    panel.querySelector('.empty-state').appendChild(button);
+  }
+}
+
+async function signInWithMicrosoft() {
+  const { error } = await sb.auth.signInWithOAuth({
+    provider: 'azure',
+    // email so we know who it is; profile so Microsoft sends the person's name.
+    options: { scopes: 'email profile', redirectTo: window.location.origin + window.location.pathname }
+  });
+  if (error) showAccessMessage('Sign-in did not start', error.message, 'Try again', signInWithMicrosoft);
+}
+
+async function signOutOfHub() {
+  await sb.auth.signOut();
+  window.location.replace(window.location.origin + window.location.pathname);
+}
+
+function showSignedIn(user) {
+  const who = document.getElementById('signedInAs');
+  if (who) who.textContent = user ? (user.user_metadata?.full_name || user.email || '') : '';
+  // Nothing in the header works without data, so hide the client picker and buttons until signed in.
+  document.querySelectorAll('.ap-client-switch, .ap-top-actions').forEach(part => {
+    part.style.visibility = user ? '' : 'hidden';
+  });
+}
+
+async function startWithSignIn() {
+  // Microsoft sends people back here with an error in the address if sign-in was refused.
+  const returned = new URLSearchParams(window.location.hash.replace(/^#/, '') || window.location.search);
+  const refused = returned.get('error_description');
+
+  const { data } = await sb.auth.getSession();
+  const user = data && data.session ? data.session.user : null;
+  showSignedIn(user);
+
+  if (!user) {
+    showAccessMessage(
+      refused ? 'Sign-in did not work' : 'Client Intelligence Hub',
+      refused ? refused.replace(/\+/g, ' ') : 'Sign in with your Oldfield Microsoft account to continue.',
+      'Sign in with Microsoft', signInWithMicrosoft);
+    return;
+  }
+  if (!String(user.email || '').toLowerCase().endsWith(STAFF_EMAIL_ENDING)) {
+    showAccessMessage('This account does not have access',
+      'The hub is for Oldfield Advisory staff. Sign out and use your Oldfield Microsoft account.',
+      'Sign out', signOutOfHub);
+    return;
+  }
+  await init();
+}
+
+sb.auth.onAuthStateChange(event => { if (event === 'SIGNED_OUT') showSignedIn(null); });
+startWithSignIn();
  
 
 
